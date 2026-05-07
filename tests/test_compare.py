@@ -16,6 +16,7 @@ def test_compare_runs_writes_summary_and_plots(tmp_path: Path):
     assert (tmp_path / "comparison" / "model_summary.csv").exists()
     assert (tmp_path / "comparison" / "activation_by_stage.csv").exists()
     assert (tmp_path / "comparison" / "markers_by_condition.csv").exists()
+    assert (tmp_path / "comparison" / "execution_by_condition.csv").exists()
     assert all((tmp_path / "comparison" / plot).exists() for plot in result["plots"])
 
 
@@ -53,4 +54,15 @@ def _write_run(base: Path, name: str, model: str, activation: float) -> Path:
             }
         ]
     ).to_csv(run / "generation_scores.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "condition": "baseline",
+                "valid_python": True,
+                "visible_pass": True,
+                "hidden_pass": True,
+                "task_pass": True,
+            }
+        ]
+    ).to_csv(run / "execution_scores.csv", index=False)
     return run

@@ -15,6 +15,7 @@ def compare_runs(run_dirs: list[str | Path], output_dir: str | Path) -> dict:
     output.mkdir(parents=True, exist_ok=True)
     activations = []
     generations = []
+    executions = []
     summaries = []
 
     for run_dir in run_dirs:
@@ -33,6 +34,12 @@ def compare_runs(run_dirs: list[str | Path], output_dir: str | Path) -> dict:
         generation_frame["run"] = label
         generations.append(generation_frame)
 
+        execution_frame = _read_execution_scores(run_path)
+        if execution_frame is not None:
+            execution_frame["model"] = model
+            execution_frame["run"] = label
+            executions.append(execution_frame)
+
         summaries.append(
             {
                 "run": label,
@@ -41,6 +48,7 @@ def compare_runs(run_dirs: list[str | Path], output_dir: str | Path) -> dict:
                 "cuda_device": manifest.get("cuda_device"),
                 "num_generations": summary["num_generations"],
                 "mean_marker_score": generation_frame["aggregate_marker_score"].mean(),
+                **_execution_summary(execution_frame),
                 "mean_negative_activation": _mean_activation(
                     activation_frame,
                     NEGATIVE_EMOTIONS,
@@ -81,7 +89,24 @@ def compare_runs(run_dirs: list[str | Path], output_dir: str | Path) -> dict:
     summary_frame.to_csv(output / "model_summary.csv", index=False)
     activation_by_stage.to_csv(output / "activation_by_stage.csv", index=False)
     markers_by_condition.to_csv(output / "markers_by_condition.csv", index=False)
-    _write_plots(output, activation_by_stage, markers_by_condition, summary_frame)
+    execution_by_condition = None
+    if executions:
+        execution_all = pd.concat(executions, ignore_index=True)
+        execution_by_condition = (
+            execution_all.groupby(["run", "model", "condition"], as_index=False)[
+                ["valid_python", "visible_pass", "hidden_pass", "task_pass"]
+            ]
+            .mean()
+            .sort_values(["run", "condition"])
+        )
+        execution_by_condition.to_csv(output / "execution_by_condition.csv", index=False)
+    _write_plots(
+        output,
+        activation_by_stage,
+        markers_by_condition,
+        summary_frame,
+        execution_by_condition,
+    )
 
     result = {
         "runs": [str(Path(run_dir)) for run_dir in run_dirs],
@@ -91,6 +116,7 @@ def compare_runs(run_dirs: list[str | Path], output_dir: str | Path) -> dict:
             "plots/negative_activation_by_stage.png",
             "plots/marker_score_by_condition.png",
             "plots/positive_vs_negative_activation.png",
+            "plots/task_pass_by_condition.png",
         ],
     }
     with (output / "comparison_summary.json").open("w", encoding="utf-8") as handle:
@@ -107,11 +133,35 @@ def _mean_activation(frame: pd.DataFrame, emotions: list[str]) -> float:
     return float(frame.loc[frame["emotion"].isin(emotions), "score"].mean())
 
 
+def _read_execution_scores(run_path: Path) -> pd.DataFrame | None:
+    path = run_path / "execution_scores.csv"
+    if not path.exists():
+        return None
+    return pd.read_csv(path)
+
+
+def _execution_summary(frame: pd.DataFrame | None) -> dict[str, float | None]:
+    if frame is None:
+        return {
+            "valid_python_rate": None,
+            "visible_pass_rate": None,
+            "hidden_pass_rate": None,
+            "task_pass_rate": None,
+        }
+    return {
+        "valid_python_rate": frame["valid_python"].mean(),
+        "visible_pass_rate": frame["visible_pass"].mean(),
+        "hidden_pass_rate": frame["hidden_pass"].mean(),
+        "task_pass_rate": frame["task_pass"].mean(),
+    }
+
+
 def _write_plots(
     output: Path,
     activation_by_stage: pd.DataFrame,
     markers_by_condition: pd.DataFrame,
     summary_frame: pd.DataFrame,
+    execution_by_condition: pd.DataFrame | None,
 ) -> None:
     import matplotlib.pyplot as plt
 
@@ -167,3 +217,19 @@ def _write_plots(
     fig.savefig(plot_dir / "positive_vs_negative_activation.png", dpi=180)
     plt.close(fig)
 
+    if execution_by_condition is not None:
+        pass_pivot = execution_by_condition.pivot(
+            index="condition",
+            columns="run",
+            values="task_pass",
+        )
+        fig, ax = plt.subplots(figsize=(10, 5.2))
+        pass_pivot.plot(kind="bar", ax=ax)
+        ax.set_title("Visible and hidden task pass rate by condition")
+        ax.set_xlabel("Condition")
+        ax.set_ylabel("Task pass rate")
+        ax.set_ylim(0, 1)
+        ax.tick_params(axis="x", rotation=35)
+        fig.tight_layout()
+        fig.savefig(plot_dir / "task_pass_by_condition.png", dpi=180)
+        plt.close(fig)
