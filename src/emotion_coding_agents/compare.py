@@ -108,16 +108,19 @@ def compare_runs(run_dirs: list[str | Path], output_dir: str | Path) -> dict:
         execution_by_condition,
     )
 
+    plots = [
+        "plots/negative_activation_by_stage.png",
+        "plots/marker_score_by_condition.png",
+        "plots/positive_vs_negative_activation.png",
+    ]
+    if execution_by_condition is not None:
+        plots.append("plots/task_pass_by_condition.png")
+
     result = {
         "runs": [str(Path(run_dir)) for run_dir in run_dirs],
         "num_models": len(run_dirs),
         "summary": summary_frame.round(4).to_dict(orient="records"),
-        "plots": [
-            "plots/negative_activation_by_stage.png",
-            "plots/marker_score_by_condition.png",
-            "plots/positive_vs_negative_activation.png",
-            "plots/task_pass_by_condition.png",
-        ],
+        "plots": plots,
     }
     with (output / "comparison_summary.json").open("w", encoding="utf-8") as handle:
         json.dump(result, handle, indent=2)
