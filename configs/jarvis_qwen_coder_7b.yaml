@@ -1,0 +1,22 @@
+model:
+  name: Qwen/Qwen2.5-Coder-7B-Instruct
+  dtype: bfloat16
+  max_new_tokens: 220
+  temperature: 0.2
+  top_p: 0.9
+
+experiment:
+  seed: 7
+  layers: auto
+  max_direction_examples_per_emotion: 8
+  steering_strengths: [-1.0, 0.0, 1.0]
+  steering_emotions: [desperate, frustrated, calm, patient]
+
+emotions:
+  - calm
+  - patient
+  - confident
+  - frustrated
+  - desperate
+  - stuck
+  - stressed

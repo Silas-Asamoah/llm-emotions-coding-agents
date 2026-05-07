@@ -1,0 +1,8 @@
+accelerate>=1.0
+matplotlib>=3.8
+numpy>=1.26
+pandas>=2.2
+pyyaml>=6.0
+safetensors>=0.4
+transformers>=4.46
+tqdm>=4.66
