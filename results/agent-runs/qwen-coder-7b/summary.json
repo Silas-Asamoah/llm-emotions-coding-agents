@@ -1,0 +1,23 @@
+{
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "num_tasks": 4,
+  "num_conditions": 5,
+  "num_runs": 20,
+  "max_attempts": 3,
+  "layers": [
+    9,
+    14,
+    18
+  ],
+  "plots": [
+    "plots/agent_pass_rates.png",
+    "plots/agent_attempts_used.png",
+    "plots/agent_negative_activation.png"
+  ],
+  "final_visible_pass_rate": 0.55,
+  "final_hidden_pass_rate": 0.55,
+  "final_task_pass_rate": 0.55,
+  "mean_attempts_used": 2.05,
+  "mean_marker_score": 0.122,
+  "mean_negative_activation": 0.3898
+}

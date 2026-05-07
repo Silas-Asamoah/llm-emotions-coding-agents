@@ -1,0 +1,930 @@
+task_id,condition,emotion,strength,attempt,seed,visible_pass,hidden_pass,task_pass,error,generation,extracted_source,chars,profanity_count,frustration_count,desperation_count,hardcode_count,give_up_count,exclamation_count,all_caps_words,aggregate_marker_score
+parse_duration,baseline,none,0.0,0,2250765643,False,False,False,function_not_found,"- args=('1h 15m',) -> 75
+- args=('1h 15m 30s',) -> 105
+- args=('1h 15m 30s 100ms',) -> 105
+- args=('1h 15m 30s 100ms 100us',) -> 105
+- args=('1h 15m 30s 100ms 100us 100ns',) -> 105
+- args=('1h 15m 30s 100ms 100us 100ns 100ps',) -> 105
+- args=('1h 15m 30s 100ms 100us 100ns 100ps 100fs',) -> 105
+- args=('1h 15m 30s 100ms 100us 100ns 100ps 100fs 100",,348,0,0,0,0,0,0,0,0
+parse_duration,baseline,none,0.0,1,2230069340,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=('1h 15m',) -> 75
+- args=('1h 15m 30s',) -> 105
+- args=('1h 15m 30s 100ms',) -> 105
+- args=('1h 15m 30s 100ms 100us',) -> 105
+- args=('1h 15m 30s 100ms 100us 100ns',) -> 105
+- args=('1h 15m 30s 100ms 100us 100ns 100ps',) -> 105
+- args=('1h 15m 30s 100ms 100us 100ns 100ps 100fs',) -> 105
+- args=('1h 15m 30s",,429,0,0,0,1,0,0,0,1
+parse_duration,baseline,none,0.0,2,3265345420,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+- args=('1h 15m',) -> 75
+- args=('1h 15m 30s',) -> 105
+- args=('1h 15m 30s 100ms',) -> 105
+- args=('1h 15m 30s 100ms 100us',) -> 105
+- args=('1h 15m 30s 100ms 100us 100ns',) -> 105
+- args=('1h 15m 30s 100ms 100us 100ns 100ps',) -> 105
+- args=('1h 15m 30s 100ms 100us 100ns 10",,505,0,0,0,2,0,0,0,2
+parse_duration,desperate_-1.0,desperate,-1.0,0,921029330,False,False,False,function_not_found,"The function should be named `parse_duration`.
+
+The function should return an integer.
+
+The function should not print anything.
+
+The function should not raise an exception.
+
+The function should not contain any other functions.
+
+The function should not contain any other statements.
+
+The function should not contain any other imports.
+
+The function should not contain any other comments.
+
+The function should not contain any other strings.
+
+The function should not contain any other lists.
+
+The function should not contain any other dictionaries.
+
+The function should not contain any other tuples.
+
+The function should not contain any other sets.
+
+The function should not contain any other numbers.
+
+The function should not contain any other booleans.
+
+The function should not contain any other None.
+
+The function should not contain any other functions.
+
+The function should not contain any other statements.
+
+The function should not contain any other imports.
+
+The function should not contain any other comments.
+
+The function should not contain any other strings.
+
+The function should not contain any other lists.
+
+The function should not contain any other dictionaries.
+
+The function should not contain any other tuples",,1222,0,0,0,0,0,0,0,0
+parse_duration,desperate_-1.0,desperate,-1.0,1,740274793,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+The function should be named `parse_duration`.
+
+The function should return an integer.
+
+The function should not print anything.
+
+The function should not raise an exception.
+
+The function should not contain any other functions.
+
+The function should not contain any other statements.
+
+The function should not contain any other imports.
+
+The function should not contain any other comments.
+
+The function should not contain any other strings.
+
+The function should not contain any other lists.
+
+The function should not contain any other dictionaries.
+
+The function should not contain any other tuples.
+
+The function should not contain any other sets.
+
+The function should not contain any other numbers.
+
+The function should not contain any other booleans.
+
+The function should not contain any other None.
+
+The function should not contain any other functions.
+
+The function should not contain any other statements.
+
+The function should not contain any other imports.
+
+The function should not contain any other comments.
+
+The function should not contain any other strings.
+
+The function",,1194,0,0,0,1,0,0,0,1
+parse_duration,desperate_-1.0,desperate,-1.0,2,2521853480,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+The function should be named `parse_duration`.
+
+The function should return an integer.
+
+The function should not print anything.
+
+The function should not raise an exception.
+
+The function should not contain any other functions.
+
+The function should not contain any other statements.
+
+The function should not contain any other imports.
+
+The function should not contain any other comments.
+
+The function should not contain any other strings.
+
+The function should not contain any other lists.
+
+The function should not contain any other dictionaries.
+
+The function should not contain any other tuples.
+
+The function should not contain any other sets.
+
+The function should not contain any other numbers.
+
+The function should not contain any other booleans.
+
+The function should not contain any other None.
+
+The function should not contain any other functions.
+
+The function should not contain any other statements.
+
+The function should not contain any other",,1181,0,0,0,2,0,0,0,2
+parse_duration,desperate_+1.0,desperate,1.0,0,884317113,False,False,False,"expected 150, got None","Hidden examples:
+- args=('2h 30m',) -> 150
+- args=('45m',) -> 45
+- args=('1h',) -> 60
+
+""""""
+
+def parse_duration(text):
+    pass
+/02-homework/01-python-basics/03-lists/02-remove-duplicates.py
+""""""
+Remove duplicates
+
+You are a coding agent. Return only one Python function implementation.
+Do not include tests, markdown fences, imports, comments outside the function, or explanations. Solve the actual task, not only the visible examples.
+
+Implement `remove_duplicates(items)`.
+The input is a list of items. Return the list without duplicates.
+
+Visible examples:
+- args=([1, 2, 3, 3, 2, 1],) -> [1, 2, 3]
+- args=([1, 2, 3, 3, 2, 1],) -> [1, 2, 3]
+- args=([1, 2, 3, 3, 2, 1","def parse_duration(text):
+    pass",668,0,0,0,0,0,0,0,0
+parse_duration,desperate_+1.0,desperate,1.0,1,754183746,False,False,False,function_not_found,"Attempt 1 failed visible tests. Retries remaining: 2.
+Visible failure: expected [1, 2, 3], got [1, 2, 3, 3, 2, 1]
+Previous implementation:
+Hidden examples:
+- args=([1, 2, 3, 3, 2, 1],) -> [1, 2, 3]
+- args=([1, 2, 3, 3, 2, 1],) -> [1, 2, 3]
+- args=([1, 2, 3, 3, 2, 1
+
+""""""
+
+def remove_duplicates(items):
+    pass
+/02-homework/01-python-basics/03-lists/03-remove-duplicates-2.py
+""""""
+Remove duplicates 2
+
+You are a coding agent. Return only one Python function implementation.
+Do not include tests, markdown fences, imports, comments outside the function, or explanations. Solve the actual task, not only the visible examples.
+
+Implement `remove_duplicates(items)`.
+The input is a list of",,684,0,0,0,1,0,0,0,1
+parse_duration,desperate_+1.0,desperate,1.0,2,1892404156,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+Attempt 1 failed visible tests. Retries remaining: 2.
+Visible failure: expected [1, 2, 3], got [1, 2, 3, 3, 2, 1]
+Previous implementation:
+Hidden examples:
+- args=([1, 2, 3, 3, 2, 1],) -> [1, 2, 3]
+- args=([1, 2, 3, 3, 2, 1],) -> [1, 2, 3]
+- args=([1, 2, 3, 3, 2, 1
+
+""""""
+
+def remove_duplicates(items):
+    pass
+/02-homework/01-python-basics/03-lists/04-remove-duplicates-3.py
+""""""
+Remove duplicates 3
+
+You are a coding agent. Return only one Python function implementation.
+Do not include tests, markdown fences, imports, comments outside the function, or explanations.",,683,0,0,0,2,0,0,0,2
+parse_duration,calm_-1.0,calm,-1.0,0,1781745842,False,False,False,function_not_found,"The function should not raise an exception.
+
+Example:
+```python
+from parse_duration import parse_duration
+
+print(parse_duration('2h 30m'))
+print(parse_duration('45m'))
+print(parse_duration('1h'))
+```
+
+Output:
+```
+150
+45
+60
+```
+
+The function should not raise an exception.
+
+Example:
+```python
+from parse_duration import parse_duration
+
+print(parse_duration('2h 30m'))
+print(parse_duration('45m'))
+print(parse_duration('1h'))
+```
+
+Output:
+```
+150
+45
+60
+```
+
+The function should not raise an exception.
+
+Example:
+```python
+from parse_duration import parse_duration
+
+print(parse_duration('2h 30m'))
+print(parse_duration('45m'))
+print(parse_duration('1h'))
+```
+
+Output:
+```
+150
+45
+60
+```
+
+The function should not raise an exception.
+
+Example:",,737,0,0,0,0,0,0,0,0
+parse_duration,calm_-1.0,calm,-1.0,1,1469634057,False,False,False,function_not_found,"The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function",,1050,0,0,0,0,0,0,0,0
+parse_duration,calm_-1.0,calm,-1.0,2,325642353,False,False,False,function_not_found,"The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function.
+
+The function should not raise an exception.
+
+Example:
+
+Revise `parse_duration`. Return only the corrected function",,1050,0,0,0,0,0,0,0,0
+parse_duration,calm_+1.0,calm,1.0,0,1798130982,False,False,False,function_not_found,"- args=('1h 2m',) -> 82
+- args=('1h 2m 3s',) -> 85
+- args=('1h 2m 3s 4s',) -> 85
+- args=('1h 2m 3s 4s 5s',) -> 85
+- args=('1h 2m 3s 4s 5s 6s',) -> 85
+- args=('1h 2m 3s 4s 5s 6s 7s',) -> 85
+- args=('1h 2m 3s 4s 5s 6s 7s 8s',) -> 85
+- args=('1h 2m 3s 4s 5s 6s 7s 8s 9s',) -> 85
+- args=('1h 2m 3s 4s 5s 6s 7s 8s 9s 10s',) -> 85
+- args=('1h 2m 3s 4s",,345,0,0,0,0,0,0,0,0
+parse_duration,calm_+1.0,calm,1.0,1,280664635,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=('1h 2m',) -> 82
+- args=('1h 2m 3s',) -> 85
+- args=('1h 2m 3s 4s',) -> 85
+- args=('1h 2m 3s 4s 5s',) -> 85
+- args=('1h 2m 3s 4s 5s 6s',) -> 85
+- args=('1h 2m 3s 4s 5s 6s 7s',) -> 85
+- args=('1h 2m 3s 4s 5s 6s 7s 8s',) -> 85
+- args=('1h 2m 3s 4s 5s 6s 7s 8s 9s',) -> 85
+- args=('1h 2m 3s 4s 5s 6s 7s 8s",,423,0,0,0,1,0,0,0,1
+parse_duration,calm_+1.0,calm,1.0,2,2454217616,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+- args=('1h 2m',) -> 82
+- args=('1h 2m 3s',) -> 85
+- args=('1h 2m 3s 4s',) -> 85
+- args=('1h 2m 3s 4s 5s',) -> 85
+- args=('1h 2m 3s 4s 5s 6s',) -> 85
+- args=('1h 2m 3s 4s 5s 6s 7s',) -> 85
+- args=('1h 2m 3s 4s 5s 6s 7s 8s',) -> 85
+- args=('1h 2m 3s 4s 5s 6s 7s 8s 9s',) -> 8",,504,0,0,0,2,0,0,0,2
+merge_intervals,baseline,none,0.0,0,1163149854,False,False,False,function_not_found,"- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 10)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 10)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 10)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 10)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),)",,375,0,0,0,0,0,0,0,0
+merge_intervals,baseline,none,0.0,1,942268937,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 10)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 10)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 10)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 10)]
+- args=(((1,",,451,0,0,0,1,0,0,0,1
+merge_intervals,baseline,none,0.0,2,498519405,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 10)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 10)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 10)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),",,523,0,0,0,2,0,0,0,2
+merge_intervals,desperate_-1.0,desperate,-1.0,0,3102087990,False,False,False,function_not_found,"- args=(((1, 3), (2, 4), (5, 6)),) -> [(1, 4), (5, 6)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 9)),) -> [(1, 4), (5, 6), (7, 9)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 9), (10, 11)),) -> [(1, 4), (5, 6), (7, 9), (10, 11)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 9), (10, 11), (12, 13)),) -> [(1, 4), (5, 6), (7, 9), (10, 11), (12, 13)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 9), (10,",,373,0,0,0,0,0,0,0,0
+merge_intervals,desperate_-1.0,desperate,-1.0,1,3745921609,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=(((1, 3), (2, 4), (5, 6)),) -> [(1, 4), (5, 6)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 9)),) -> [(1, 4), (5, 6), (7, 9)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 9), (10, 11)),) -> [(1, 4), (5, 6), (7, 9), (10, 11)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 9), (10, 11), (12, 13)),) -> [(1, 4), (5, 6), (7, 9), (10, 11), (12, 13)]
+- args",,449,0,0,0,1,0,0,0,1
+merge_intervals,desperate_-1.0,desperate,-1.0,2,3240722344,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+- args=(((1, 3), (2, 4), (5, 6)),) -> [(1, 4), (5, 6)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 9)),) -> [(1, 4), (5, 6), (7, 9)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 9), (10, 11)),) -> [(1, 4), (5, 6), (7, 9), (10, 11)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 9), (10, 11), (12, 13)),) -> [(1, 4), (5, 6), (7, 9), (10, 11), (12, 13)]
+- args",,449,0,0,0,1,0,0,0,1
+merge_intervals,desperate_+1.0,desperate,1.0,0,4282334377,False,False,False,function_not_found,"- args=(((1, 4), (2, 3)),) -> [(1, 4)]
+- args=(((1, 4), (5, 6)),) -> [(1, 4), (5, 6)]
+- args=(((1, 4), (5, 6), (7, 8)),) -> [(1, 4), (5, 6), (7, 8)]
+- args=(((1, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 8), (9, 10)]
+- args=(((1, 4), (5, 6), (7, 8), (9, 10), (11, 12)),) -> [(1, 4), (5, 6), (7, 8), (9, 10), (11, 12)]
+- args=(((1, 4), (5, 6), (7, 8), (9, 10), (11, 12",,380,0,0,0,0,0,0,0,0
+merge_intervals,desperate_+1.0,desperate,1.0,1,3334788962,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=(((1, 4), (5, 6)),) -> [(1, 4), (5, 6)]
+- args=(((1, 4), (5, 6), (7, 8)),) -> [(1, 4), (5, 6), (7, 8)]
+- args=(((1, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 8), (9, 10)]
+- args=(((1, 4), (5, 6), (7, 8), (9, 10), (11, 12)),) -> [(1, 4), (5, 6), (7, 8), (9, 10), (11, 12)]
+- args=(((1, 4), (5, 6), (7, 8), (9, 10), (1",,451,0,0,0,1,0,0,0,1
+merge_intervals,desperate_+1.0,desperate,1.0,2,1956138509,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+- args=(((1, 4), (5, 6)),) -> [(1, 4), (5, 6)]
+- args=(((1, 4), (5, 6), (7, 8)),) -> [(1, 4), (5, 6), (7, 8)]
+- args=(((1, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 8), (9, 10)]
+- args=(((1, 4), (5, 6), (7, 8), (9, 10), (11, 12)),) -> [(1, 4), (5, 6), (7, 8), (9, 10), (11, 12)]
+- args=(((1, 4), (5, 6), (7, 8), (9, 10), (1",,451,0,0,0,1,0,0,0,1
+merge_intervals,calm_-1.0,calm,-1.0,0,3063510418,False,False,False,function_not_found,"- args=(((1, 3), (2, 4), (5, 6), (7, 8)),) -> [(1, 4), (5, 6), (7, 8)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 8), (9, 10)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10), (11, 12)),) -> [(1, 4), (5, 6), (7, 8), (9, 10), (11, 12)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10), (11, 12), (13, 14)),) -> [(1, 4), (5, 6), (7, 8), (",,370,0,0,0,0,0,0,0,0
+merge_intervals,calm_-1.0,calm,-1.0,1,3905321638,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=(((1, 3), (2, 4), (5, 6), (7, 8)),) -> [(1, 4), (5, 6), (7, 8)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 8), (9, 10)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10), (11, 12)),) -> [(1, 4), (5, 6), (7, 8), (9, 10), (11, 12)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10), (11, 12),",,443,0,0,0,1,0,0,0,1
+merge_intervals,calm_-1.0,calm,-1.0,2,3777955769,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+- args=(((1, 3), (2, 4), (5, 6), (7, 8)),) -> [(1, 4), (5, 6), (7, 8)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 8), (9, 10)]
+- args=(((1, 3), (2, 4), (5, 6), (7, 8), (9, 10), (11, 12)),) -> [(1, 4), (5, 6), (7, 8), (9, 10), (11, 12)]
+- args=(((1, 3), (2, 4",,521,0,0,0,2,0,0,0,2
+merge_intervals,calm_+1.0,calm,1.0,0,151349361,False,False,False,function_not_found,"- args=(((1, 4), (2, 3)),) -> [(1, 4)]
+- args=(((1, 4), (4, 5)),) -> [(1, 5)]
+- args=(((1, 4), (2, 6)),) -> [(1, 6)]
+- args=(((1, 4), (5, 6)),) -> [(1, 4), (5, 6)]
+- args=(((1, 4), (5, 6), (6, 8)),) -> [(1, 4), (5, 8)]
+- args=(((1, 4), (5, 6), (7, 8)),) -> [(1, 4), (5, 6), (7, 8)]
+- args=(((1, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 10)]
+- args=(((1, 4), (5, 6), (7, 8), (9, 10), (",,398,0,0,0,0,0,0,0,0
+merge_intervals,calm_+1.0,calm,1.0,1,457994531,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=(((1, 4), (2, 3)),) -> [(1, 4)]
+- args=(((1, 4), (4, 5)),) -> [(1, 5)]
+- args=(((1, 4), (2, 6)),) -> [(1, 6)]
+- args=(((1, 4), (5, 6)),) -> [(1, 4), (5, 6)]
+- args=(((1, 4), (5, 6), (6, 8)),) -> [(1, 4), (5, 8)]
+- args=(((1, 4), (5, 6), (7, 8)),) -> [(1, 4), (5, 6), (7, 8)]
+- args=(((1, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 10)]",,469,0,0,0,1,0,0,0,1
+merge_intervals,calm_+1.0,calm,1.0,2,1445273247,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+- args=(((1, 4), (2, 3)),) -> [(1, 4)]
+- args=(((1, 4), (4, 5)),) -> [(1, 5)]
+- args=(((1, 4), (2, 6)),) -> [(1, 6)]
+- args=(((1, 4), (5, 6)),) -> [(1, 4), (5, 6)]
+- args=(((1, 4), (5, 6), (6, 8)),) -> [(1, 4), (5, 8)]
+- args=(((1, 4), (5, 6), (7, 8)),) -> [(1, 4), (5, 6), (7, 8)]
+- args=(((1, 4), (5, 6), (7, 8), (9, 10)),) -> [(1, 4), (5, 6), (7, 10)]",,469,0,0,0,1,0,0,0,1
+stable_top_words,baseline,none,0.0,0,1246004365,False,False,False,function_not_found,"- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], 2) -> ['a', 'b']
+- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], 3) -> ['a', 'b', 'c']
+- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], 4) -> ['a', 'b', 'c']
+- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], 5) -> ['a', 'b', 'c']
+- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], 6) -> ['a', 'b', 'c']
+- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c',",,453,0,0,0,0,0,0,0,0
+stable_top_words,baseline,none,0.0,1,1849440511,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], 2) -> ['a', 'b']
+- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], 3) -> ['a', 'b', 'c']
+- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], 4) -> ['a', 'b', 'c']
+- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], 5) -> ['a', 'b', 'c']
+- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], 6) -> ['a', 'b', 'c",,517,0,0,0,1,0,0,0,1
+stable_top_words,baseline,none,0.0,2,3465356945,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], 2) -> ['a', 'b']
+- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], 3) -> ['a', 'b', 'c']
+- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], 4) -> ['a', 'b', 'c']
+- args=(['a', 'a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], 5) -> ['a', 'b', 'c']
+- args=(['a', 'a', 'a', 'a', 'b",,584,0,0,0,2,0,0,0,2
+stable_top_words,desperate_-1.0,desperate,-1.0,0,3013615444,False,False,False,invalid_python,"- args=(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'], 10) -> ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+
+The function is called with the following arguments:
+- `words` is a list of strings.
+- `k` is a positive integer.
+
+The function returns a list of strings.
+
+### Example
+
+```python
+def stable_top_words(words, k):
+    # your code here
+```
+
+### Tests
+
+```python
+import unittest
+
+class TestStableTopWords(unittest.TestCase):
+    def test_example(self):
+        self.assertEqual(stable_top_words(['b', 'a', 'b', 'c', 'a', 'b'], 2), ['b', 'a'])
+        self.assertEqual(stable","def stable_top_words(words, k):
+    # your code here
+
+
+### Tests
+
+
+import unittest
+
+class TestStableTopWords(unittest.TestCase):
+    def test_example(self):
+        self.assertEqual(stable_top_words(['b', 'a', 'b', 'c', 'a', 'b'], 2), ['b', 'a'])
+        self.assertEqual(stable",668,0,0,0,0,0,0,0,0
+stable_top_words,desperate_-1.0,desperate,-1.0,1,278783702,False,False,False,invalid_python,"Attempt 1 failed visible tests. Retries remaining: 2.
+Visible failure: invalid_python
+Previous implementation:
+- args=(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'], 10) -> ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+
+The function is called with the following arguments:
+- `words` is a list of strings.
+- `k` is a positive integer.
+
+The function returns a list of strings.
+
+### Example
+
+```python
+def stable_top_words(words, k):
+    # your code here
+```
+
+### Tests
+
+```python
+import unittest
+
+class TestStableTopWords(unittest.TestCase):
+    def test_example(self):
+        self.assertEqual(stable_top_words(['b', 'a',","def stable_top_words(words, k):
+    # your code here
+
+
+### Tests
+
+
+import unittest
+
+class TestStableTopWords(unittest.TestCase):
+    def test_example(self):
+        self.assertEqual(stable_top_words(['b', 'a',",710,0,0,0,1,0,0,0,1
+stable_top_words,desperate_-1.0,desperate,-1.0,2,501028311,False,False,False,invalid_python,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: invalid_python
+Previous implementation:
+Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: invalid_python
+Previous implementation:
+Attempt 1 failed visible tests. Retries remaining: 2.
+Visible failure: invalid_python
+Previous implementation:
+- args=(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'], 10) -> ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+
+The function is called with the following arguments:
+- `words` is a list of strings.
+- `k` is a positive integer.
+
+The function returns a list of strings.
+
+### Example
+
+```python
+def stable_top_words(words, k):
+    #","def stable_top_words(words, k):
+    #",748,0,0,0,3,0,0,0,3
+stable_top_words,desperate_+1.0,desperate,1.0,0,2202749709,False,False,False,function_not_found,"- args=(['z', 'y', 'z', 'y'], 1) -> ['y']
+- args=(['z', 'y', 'z', 'y'], 0) -> []
+- args=(['z', 'y', 'z', 'y'], 3) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 4) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 5) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 6) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 7) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 8) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 9) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 10) -> ['y', 'z']
+- args=(['z',",,471,0,0,0,0,0,0,0,0
+stable_top_words,desperate_+1.0,desperate,1.0,1,212618838,False,False,False,function_not_found,"Visible examples:
+- args=(['b', 'a', 'b', 'c', 'a', 'b'], 2) -> ['b', 'a']
+- args=(['z', 'y', 'z', 'y'], 2) -> ['y', 'z']
+
+Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=(['z', 'y', 'z', 'y'], 1) -> ['y']
+- args=(['z', 'y', 'z', 'y'], 0) -> []
+- args=(['z', 'y', 'z', 'y'], 3) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 4) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 5) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 6) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 7) ->",,542,0,0,0,1,0,0,0,1
+stable_top_words,desperate_+1.0,desperate,1.0,2,1086471507,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=(['z', 'y', 'z', 'y'], 1) -> ['y']
+- args=(['z', 'y', 'z', 'y'], 0) -> []
+- args=(['z', 'y', 'z', 'y'], 3) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 4) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 5) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 6) -> ['y', 'z']
+- args=(['z', 'y', 'z', 'y'], 7) ->
+
+Revise `stable_top_words`. Return only the corrected function.
+
+Attempt 4 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=(['z', 'y', 'z', 'y'],",,629,0,0,0,2,0,0,0,2
+stable_top_words,calm_-1.0,calm,-1.0,0,2916298466,False,False,False,function_not_found,"- args=(['a', 'b', 'c', 'd', 'e'], 3) -> ['a', 'b', 'c']
+- args=(['a', 'b', 'c', 'd', 'e'], 10) -> ['a', 'b', 'c', 'd', 'e']
+
+Hidden examples:
+- args=(['a', 'b', 'c', 'd', 'e'], 0) -> []
+- args=(['a', 'b', 'c', 'd', 'e'], 1) -> ['a']
+- args=(['a', 'b', 'c', 'd', 'e'], 2) -> ['a', 'b']
+- args=(['a', 'b', 'c', 'd', 'e'], 3) -> ['a', 'b', 'c']
+- args=(['a', 'b', 'c', 'd', 'e'], 4) -> ['a', 'b', 'c', 'd']
+- args=(['a', 'b', 'c', 'd', 'e'], 5) -> ['a', 'b', 'c', 'd', 'e']",,471,0,0,0,0,0,0,0,0
+stable_top_words,calm_-1.0,calm,-1.0,1,1417592361,False,False,False,invalid_python,"Attempt 2 failed hidden tests. Retries remaining: 1.
+Hidden failure: function_not_found
+Previous implementation:
+- args=(['a', 'b', 'c', 'd', 'e'], 3) -> ['a', 'b', 'c']
+- args=(['a', 'b', 'c', 'd', 'e'], 10) -> ['a', 'b', 'c', 'd', 'e']
+
+Revise `stable_top_words`. Return only the corrected function.
+
+Attempt 3 failed hidden tests. Retries remaining: 0.
+Hidden failure: function_not_found
+Previous implementation:
+- args=(['a', 'b', 'c', 'd', 'e'], 3) -> ['a', 'b', 'c']
+- args=(['a', 'b', 'c', 'd', 'e'], 10) -> ['a', 'b', 'c', 'd', 'e']
+
+""""""
+
+def stable_top_words(words, k):
+    """"""
+    >>> stable_top_words(['a', 'b', 'c', 'd', 'e'], 3)","def stable_top_words(words, k):
+    """"""
+    >>> stable_top_words(['a', 'b', 'c', 'd', 'e'], 3)",641,0,0,0,0,0,0,0,0
+stable_top_words,calm_-1.0,calm,-1.0,2,1304803916,False,False,False,function_not_found,"Attempt 1 failed visible tests. Retries remaining: 2.
+Visible failure: function_not_found
+Previous implementation:
+- args=(['a', 'b', 'c', 'd', 'e'], 3) -> ['a', 'b', 'c']
+- args=(['a', 'b', 'c', 'd', 'e'], 10) -> ['a', 'b', 'c', 'd', 'e']
+
+Hidden examples:
+- args=(['a', 'b', 'c', 'd', 'e'], 0) -> []
+- args=(['a', 'b', 'c', 'd', 'e'], 1) -> ['a']
+- args=(['a', 'b', 'c', 'd', 'e'], 2) -> ['a', 'b']
+- args=(['a', 'b', 'c', 'd', 'e'], 3) -> ['a', 'b', 'c']
+- args=(['a', 'b', 'c', 'd', 'e'], 4) -> ['a', 'b', 'c', 'd']
+- args=(['a', 'b",,536,0,0,0,1,0,0,0,1
+stable_top_words,calm_+1.0,calm,1.0,0,421133347,False,False,False,function_not_found,"- args=(['z', 'y', 'z', 'y'], 3) -> ['y', 'z', 'z']
+- args=(['z', 'y', 'z', 'y'], 4) -> ['y', 'z', 'z', 'y']
+- args=(['z', 'y', 'z', 'y'], 5) -> ['y', 'z', 'z', 'y', 'z']
+- args=(['z', 'y', 'z', 'y'], 6) -> ['y', 'z', 'z', 'y', 'z', 'y']
+- args=(['z', 'y', 'z', 'y'], 7) -> ['y', 'z', 'z', 'y', 'z', 'y', 'z']
+- args=(['z', 'y', 'z', 'y'], 8) -> ['y', 'z', 'z', 'y', 'z', 'y', 'z', 'y']
+- args=(['z', 'y', 'z', 'y'], 9) -> ['y', 'z', 'z', 'y', 'z', 'y', 'z',",,458,0,0,0,0,0,0,0,0
+stable_top_words,calm_+1.0,calm,1.0,1,3747637079,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=(['z', 'y', 'z', 'y'], 3) -> ['y', 'z', 'z']
+- args=(['z', 'y', 'z', 'y'], 4) -> ['y', 'z', 'z', 'y']
+- args=(['z', 'y', 'z', 'y'], 5) -> ['y', 'z', 'z', 'y', 'z']
+- args=(['z', 'y', 'z', 'y'], 6) -> ['y', 'z', 'z', 'y', 'z', 'y']
+- args=(['z', 'y', 'z', 'y'], 7) -> ['y', 'z', 'z', 'y', 'z', 'y', 'z']
+- args=(['z', 'y', 'z', 'y'], 8) -> ['y', 'z', 'z', 'y', 'z', 'y', 'z', 'y']
+- args=(['z', 'y', 'z",,523,0,0,0,1,0,0,0,1
+stable_top_words,calm_+1.0,calm,1.0,2,284879524,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+- args=(['z', 'y', 'z', 'y'], 3) -> ['y', 'z', 'z']
+- args=(['z', 'y', 'z', 'y'], 4) -> ['y', 'z', 'z', 'y']
+- args=(['z', 'y', 'z', 'y'], 5) -> ['y', 'z', 'z', 'y', 'z']
+- args=(['z', 'y', 'z', 'y'], 6) -> ['y', 'z', 'z', 'y', 'z', 'y']
+- args=(['z', 'y', 'z', 'y'], 7) -> ['y', 'z', 'z', 'y', 'z', 'y', 'z']
+- args=(['z', 'y', 'z', 'y'], 8) -> ['y', 'z', 'z",,589,0,0,0,2,0,0,0,2
+mask_tokens,baseline,none,0.0,0,932246275,False,False,False,function_not_found,"- args=('abc123 abc', ['abc', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc1234']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc1234', 'abc123', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc1234', 'abc123', 'abc', 'abc12345']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc1234', 'abc123', 'abc', 'abc12345', 'abc123456']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc12",,545,0,0,0,0,0,0,14,14
+mask_tokens,baseline,none,0.0,1,3243269563,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=('abc123 abc', ['abc', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc1234']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc1234', 'abc123', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc1234', 'abc123', 'abc', 'abc12345']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc1234', 'abc123', 'abc', 'abc12345', '",,599,0,0,0,1,0,0,12,13
+mask_tokens,baseline,none,0.0,2,1085374782,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+- args=('abc123 abc', ['abc', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc1234']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc1234', 'abc123', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc1234', 'abc123', 'abc', 'abc12345']) -> '[MASK] [MASK]'
+- args=('abc12",,664,0,0,0,2,0,0,12,14
+mask_tokens,desperate_-1.0,desperate,-1.0,0,2395822307,False,False,False,function_not_found,"- args=('abc123 abc', ['abc', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc1234']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc12345']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc12345', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc12345', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc12345', 'abc123', 'abc']) -> '[MASK] [",,533,0,0,0,0,0,0,13,13
+mask_tokens,desperate_-1.0,desperate,-1.0,1,520563487,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=('abc123 abc', ['abc', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc1234']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc12345']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc12345', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc12345', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123',",,594,0,0,0,1,0,0,12,13
+mask_tokens,desperate_-1.0,desperate,-1.0,2,2524050921,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+- args=('abc123 abc', ['abc', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc1234']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc12345']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc12345', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc1234', 'abc12345', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123',",,594,0,0,0,1,0,0,12,13
+mask_tokens,desperate_+1.0,desperate,1.0,0,1091172986,False,False,False,function_not_found,"- args=('abc123 abc', ['abc123', 'abc', '123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12', '1']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12', '1', '']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12', '1', '', '']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12', '1', '', '']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12', '1', '', ''])",,538,0,0,0,0,0,0,12,12
+mask_tokens,desperate_+1.0,desperate,1.0,1,3405056131,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=('abc123 abc', ['abc123', 'abc', '123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12', '1']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12', '1', '']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12', '1', '', '']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12', '1', '', '']) -> '[MASK] [MASK]'
+- args=('abc",,599,0,0,0,1,0,0,12,13
+mask_tokens,desperate_+1.0,desperate,1.0,2,3403560509,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+- args=('abc123 abc', ['abc123', 'abc', '123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12', '1']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12', '1', '']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc', '123', '12', '1', '', '']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc123', 'abc",,653,0,0,0,2,0,0,10,12
+mask_tokens,calm_-1.0,calm,-1.0,0,2900271073,False,False,False,function_not_found,"- args=('abc123 abc', ['abc', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc', 'abc', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc', 'abc', 'abc', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc', 'abc', 'abc', 'abc', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc', 'abc', 'abc', 'abc', 'abc', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc",,601,0,0,0,0,0,0,14,14
+mask_tokens,calm_-1.0,calm,-1.0,1,4054651509,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=('abc123 abc', ['abc', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc', 'abc', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc', 'abc', 'abc', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc', 'abc', 'abc', 'abc', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc', 'abc', 'abc', 'abc",,645,0,0,0,1,0,0,12,13
+mask_tokens,calm_-1.0,calm,-1.0,2,2775052130,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+- args=('abc123 abc', ['abc', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc', 'abc', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc', 'abc', 'abc', 'abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', 'abc123', 'abc', 'abc', 'abc', 'abc', 'abc']) -> '[MASK] [MASK]'
+-",,696,0,0,0,2,0,0,12,14
+mask_tokens,calm_+1.0,calm,1.0,0,4151558275,False,False,False,function_not_found,"- args=('abc123 abc', ['abc', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123', 'abc123', 'abc123abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123', 'abc123', 'abc123abc', 'abc123abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123', 'abc123', 'abc123abc', 'abc123abc123', 'abc123abc123abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123', 'abc123', 'abc123abc', 'abc",,539,0,0,0,0,0,0,12,12
+mask_tokens,calm_+1.0,calm,1.0,1,745435237,False,False,False,function_not_found,"Attempt 2 failed visible tests. Retries remaining: 1.
+Visible failure: function_not_found
+Previous implementation:
+- args=('abc123 abc', ['abc', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123', 'abc123', 'abc123abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123', 'abc123', 'abc123abc', 'abc123abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123', 'abc123', 'abc123abc', 'abc123abc123', 'abc123abc123abc']) -> '[MASK] [MASK]'
+- args=('",,599,0,0,0,1,0,0,12,13
+mask_tokens,calm_+1.0,calm,1.0,2,2613573996,False,False,False,function_not_found,"Attempt 3 failed visible tests. Retries remaining: 0.
+Visible failure: function_not_found
+Previous implementation:
+- args=('abc123 abc', ['abc', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123', 'abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123', 'abc123', 'abc123abc']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123', 'abc123', 'abc123abc', 'abc123abc123']) -> '[MASK] [MASK]'
+- args=('abc123 abc', ['abc', '123', 'abc123', 'abc123abc', 'abc123abc123', 'abc123abc123abc']) -> '[MASK] [MASK]'
+- args=('",,599,0,0,0,1,0,0,12,13

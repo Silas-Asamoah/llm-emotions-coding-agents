@@ -1,0 +1,11 @@
+run,model,condition,final_visible_pass,final_hidden_pass,final_task_pass,attempts_used
+qwen-coder-7b,Qwen/Qwen2.5-Coder-7B-Instruct,baseline,0.5,0.5,0.5,2.25
+qwen-coder-7b,Qwen/Qwen2.5-Coder-7B-Instruct,calm_+1.0,0.75,0.75,0.75,1.75
+qwen-coder-7b,Qwen/Qwen2.5-Coder-7B-Instruct,calm_-1.0,0.5,0.5,0.5,2.0
+qwen-coder-7b,Qwen/Qwen2.5-Coder-7B-Instruct,desperate_+1.0,0.75,0.75,0.75,1.75
+qwen-coder-7b,Qwen/Qwen2.5-Coder-7B-Instruct,desperate_-1.0,0.25,0.25,0.25,2.5
+starcoder2-7b,bigcode/starcoder2-7b,baseline,0.0,0.0,0.0,3.0
+starcoder2-7b,bigcode/starcoder2-7b,calm_+1.0,0.0,0.0,0.0,3.0
+starcoder2-7b,bigcode/starcoder2-7b,calm_-1.0,0.0,0.0,0.0,3.0
+starcoder2-7b,bigcode/starcoder2-7b,desperate_+1.0,0.0,0.0,0.0,3.0
+starcoder2-7b,bigcode/starcoder2-7b,desperate_-1.0,0.0,0.0,0.0,3.0
