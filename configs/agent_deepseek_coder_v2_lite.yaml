@@ -2,10 +2,9 @@ model:
   name: deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct
   dtype: bfloat16
   device: auto
-  max_new_tokens: 220
+  max_new_tokens: 360
   temperature: 0.2
   top_p: 0.9
-  use_cache: false
 
 experiment:
   seed: 13
