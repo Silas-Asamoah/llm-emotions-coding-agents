@@ -1,9 +1,8 @@
 {
   "runs": [
-    "results/agent-runs/qwen-coder-7b",
-    "results/agent-runs/starcoder2-7b"
+    "results/agent-runs/qwen-coder-7b"
   ],
-  "num_models": 2,
+  "num_models": 1,
   "summary": [
     {
       "run": "qwen-coder-7b",
@@ -15,17 +14,6 @@
       "mean_attempts_used": 2.05,
       "mean_marker_score": 0.122,
       "mean_negative_activation": 0.3898
-    },
-    {
-      "run": "starcoder2-7b",
-      "model": "bigcode/starcoder2-7b",
-      "num_runs": 20,
-      "final_visible_pass_rate": 0.0,
-      "final_hidden_pass_rate": 0.0,
-      "final_task_pass_rate": 0.0,
-      "mean_attempts_used": 3.0,
-      "mean_marker_score": 3.9,
-      "mean_negative_activation": 0.4535
     }
   ],
   "plots": [

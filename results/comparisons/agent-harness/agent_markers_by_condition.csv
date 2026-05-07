@@ -4,8 +4,3 @@ qwen-coder-7b,Qwen/Qwen2.5-Coder-7B-Instruct,calm_+1.0,0.14285714285714285
 qwen-coder-7b,Qwen/Qwen2.5-Coder-7B-Instruct,calm_-1.0,0.125
 qwen-coder-7b,Qwen/Qwen2.5-Coder-7B-Instruct,desperate_+1.0,0.14285714285714285
 qwen-coder-7b,Qwen/Qwen2.5-Coder-7B-Instruct,desperate_-1.0,0.1
-starcoder2-7b,bigcode/starcoder2-7b,baseline,4.166666666666667
-starcoder2-7b,bigcode/starcoder2-7b,calm_+1.0,3.8333333333333335
-starcoder2-7b,bigcode/starcoder2-7b,calm_-1.0,3.75
-starcoder2-7b,bigcode/starcoder2-7b,desperate_+1.0,3.75
-starcoder2-7b,bigcode/starcoder2-7b,desperate_-1.0,4.0

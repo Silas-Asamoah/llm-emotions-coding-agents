@@ -26,14 +26,11 @@ AGENT_COMPARISON = ROOT / "results" / "comparisons" / "agent-harness"
 MODEL_LABELS = {
     "main-qwen-coder-7b": "Qwen 7B",
     "main-deepseek-coder-6_7b": "DeepSeek 6.7B",
-    "main-starcoder2-7b": "StarCoder2 7B",
     "qwen-coder-7b": "Qwen 7B",
-    "starcoder2-7b": "StarCoder2 7B",
 }
 MODEL_COLORS = {
     "Qwen 7B": "#228be6",
     "DeepSeek 6.7B": "#f08c00",
-    "StarCoder2 7B": "#2f9e44",
 }
 CONDITION_ORDER = [
     "baseline",
@@ -212,7 +209,7 @@ def _plot_agent_task_pass() -> None:
         values="final_task_pass",
     ).reindex(index=conditions, columns=labels)
 
-    fig, ax = _figure("Agent harness: Qwen recovers, StarCoder2 stalls")
+    fig, ax = _figure("Agent harness: Qwen sometimes recovers")
     _grouped_bars(ax, pivot, labels, annotate=True)
     _style_axes(ax, "Condition", "Final task pass rate")
     ax.set_ylim(0, 1.05)
@@ -351,7 +348,7 @@ def _ordered_conditions(values, order: list[str]) -> list[str]:
 
 
 def _ordered_model_labels(values) -> list[str]:
-    order = ["Qwen 7B", "DeepSeek 6.7B", "StarCoder2 7B"]
+    order = ["Qwen 7B", "DeepSeek 6.7B"]
     value_set = set(values)
     return [value for value in order if value in value_set]
 

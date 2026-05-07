@@ -143,11 +143,10 @@ or exploits the test harness.
 
 ## Main 7B Comparison
 
-I then ran the same pipeline on three larger open coding models:
+I then ran the same pipeline on two larger open coding models:
 
 - `Qwen/Qwen2.5-Coder-7B-Instruct`
 - `deepseek-ai/deepseek-coder-6.7b-instruct`
-- `bigcode/starcoder2-7b`
 
 The run used an NVIDIA A100-PCIE-40GB on JarvisLabs. Each model produced 27
 generations: 3 coding tasks times baseline plus positive and negative steering
@@ -160,13 +159,12 @@ tests for the three toy tasks.
 ![Negative activation by stage](assets/plots/main-negative-activation-excalidraw.png)
 
 The activation result is broadly consistent with the smoke run, with one caveat:
-the trajectory is not monotonic. Stage 4 is higher than stage 0 for all three
-models, but there is a mid-trajectory dip around stage 3. The mean negative
-projection was highest for StarCoder2, then Qwen, then DeepSeek:
+the trajectory is not monotonic. Stage 4 is higher than stage 0 for both models,
+but there is a mid-trajectory dip around stage 3. The mean negative projection
+was higher for Qwen than DeepSeek:
 
 | Model | Mean negative projection | Mean positive projection |
 |---|---:|---:|
-| StarCoder2-7B | 0.5165 | 0.4986 |
 | Qwen2.5-Coder-7B-Instruct | 0.5063 | 0.4750 |
 | DeepSeek-Coder-6.7B-Instruct | 0.4699 | 0.4497 |
 
@@ -179,27 +177,25 @@ that differ across coding-failure prompts.
 ![Task pass by condition](assets/plots/main-task-pass-excalidraw.png)
 
 After fixing the evaluator to allow common generated-code builtins such as
-`map` and exception classes such as `ZeroDivisionError`, StarCoder2 had the best
-full task pass rate, Qwen had the best valid-Python rate, and DeepSeek was the
-least reliable under this prompt setup:
+`map` and exception classes such as `ZeroDivisionError`, Qwen was the more
+reliable instruction-following baseline. DeepSeek was weaker under this prompt
+setup:
 
 | Model | Valid Python rate | Visible pass rate | Hidden pass rate | Full task pass rate |
 |---|---:|---:|---:|---:|
-| StarCoder2-7B | 0.9630 | 0.6296 | 0.6296 | 0.6296 |
 | Qwen2.5-Coder-7B-Instruct | 1.0000 | 0.6296 | 0.4815 | 0.4815 |
 | DeepSeek-Coder-6.7B-Instruct | 0.7037 | 0.2593 | 0.2593 | 0.2593 |
 
 The condition-level numbers are noisy because each condition only has three
 tasks. Still, one pattern is useful: baseline performance was `0.667` task pass
-rate for all three models, and no steered condition beat baseline in this single
-run. That is a negative first observation for naive steering, not a stable
-reliability result.
+rate for both models, and Qwen did not improve under naive steering in this
+single run. DeepSeek's `patient_-1.0` condition reached `1.000` on three tasks,
+but that is too small and prompt-sensitive to treat as a reliability result.
 
 For Qwen, several negative steering conditions preserved the baseline pass rate,
 while positive steering often dropped to `0.333`. For DeepSeek, most steered
 conditions dropped to `0.0`, though `patient_-1.0` reached `1.000` on these
-three tasks. StarCoder2 mostly stayed at `0.667` except `calm_+1.0`, which
-dropped to `0.333`.
+three tasks.
 
 ## Visible Markers
 
@@ -207,9 +203,7 @@ dropped to `0.333`.
 
 Visible emotion markers again underperformed as the main signal. Qwen and
 DeepSeek had almost no visible marker hits, despite meaningful differences in
-task pass rate. StarCoder2 had the highest marker score, but that was mostly
-because the base model tended to continue with dataset-like code snippets and
-extra text rather than behaving like an instruction-following agent.
+task pass rate.
 
 That supports the original hunch: profanity and obvious frustration language
 are easy to count, but they are not enough. The next hypothesis to test is
@@ -219,7 +213,7 @@ looks emotional.
 ## Current Takeaway
 
 The strongest result so far is not "emotion steering works." In this single
-run, no steered condition beat baseline.
+run, naive steering did not produce a stable improvement over baseline.
 
 The stronger result is:
 
@@ -228,10 +222,9 @@ The stronger result is:
 > not improve task behavior in this first 7B comparison.
 
 Qwen is still the best instruction-following model to use for the next iteration
-because it produced valid, task-like code most consistently. StarCoder2 is
-useful as a strong base-model contrast and actually won the toy execution score
-after evaluator fixes. DeepSeek needs a prompt-formatting follow-up before I
-would treat its behavioral numbers as a clean model comparison.
+because it produced valid, task-like code most consistently. DeepSeek needs a
+prompt-formatting follow-up before I would treat its behavioral numbers as a
+clean model comparison.
 
 ## Coding-Agent Harness
 
@@ -245,49 +238,41 @@ now behaves more like a coding agent:
 5. The model retries up to three attempts.
 6. Hidden tests are scored only for analysis.
 
-I ran this harness on Qwen and StarCoder2. DeepSeek was left out of this round
-because the earlier run showed prompt-format artifacts that need separate
-cleanup before an agent-loop comparison is fair. These numbers come from a
-clean rerun with the fixed function extractor, so the harness stops as soon as a
-visible test pass is detected. Generation seeds are fixed by task, condition,
-and attempt so early stopping does not shift later samples.
+I ran this first harness on Qwen. DeepSeek was left out of this round because
+the earlier run showed prompt-format artifacts that need separate cleanup before
+an agent-loop comparison is fair. These numbers come from a clean rerun with the
+fixed function extractor, so the harness stops as soon as a visible test pass is
+detected. Generation seeds are fixed by task, condition, and attempt so early
+stopping does not shift later samples.
 
 ![Agent task pass comparison](assets/plots/agent-task-pass-excalidraw.png)
 
 | Model | Final visible pass | Final hidden pass | Final task pass | Mean attempts used | Mean marker score / attempted generation |
 |---|---:|---:|---:|---:|---:|
 | Qwen2.5-Coder-7B-Instruct | 0.5500 | 0.5500 | 0.5500 | 2.0500 | 0.1220 |
-| StarCoder2-7B | 0.0000 | 0.0000 | 0.0000 | 3.0000 | 3.9000 |
 
-This is the clearest behavioral separation so far. Qwen often produced usable
-function-like code and sometimes recovered after feedback. StarCoder2 kept
-generating dataset-like continuations, examples, prose, or unrelated code, which
-is exactly the kind of base-model contrast I wanted.
+This is the first behaviorally meaningful version of the experiment. Qwen often
+produced usable function-like code and sometimes recovered after feedback.
 
 ![Agent marker comparison](assets/plots/agent-marker-score-excalidraw.png)
 
 The marker score also became more informative in the agent loop. This is a
 per-attempted-generation average, so models that stop early contribute fewer
-later attempts. StarCoder2's surface text had far more visible markers and
-off-task artifacts, while Qwen remained terse. That does not mean StarCoder2 was
-"more emotional"; it means the visible telemetry tracked loss of
-instruction-following in this harness.
+later attempts. Qwen stayed mostly terse, which reinforces the main point:
+surface emotional language is not where the interesting signal lives.
 
 ![Agent negative activation comparison](assets/plots/agent-negative-activation-excalidraw.png)
 
-The observed-prompt negative-emotion projection was also higher for StarCoder2
-than Qwen:
+The observed-prompt negative-emotion projection for Qwen was:
 
 | Model | Mean observed negative projection |
 |---|---:|
-| StarCoder2-7B | 0.4535 |
 | Qwen2.5-Coder-7B-Instruct | 0.3898 |
 
-This is still not a predictive result, and it is attempt-weighted: Qwen stops
-early more often, while StarCoder2 reaches the full retry budget. It is a useful
-signpost: the model with more off-task retry behavior also showed higher
-average projection onto the negative emotion directions in the observed
-agent-loop prompts.
+This is still not a predictive result, and it is attempt-weighted because the
+harness stops after visible tests pass. It is a useful signpost for the next
+version: compare this signal against later failure, hardcoding, and recovery
+behavior across modern agentic coding models.
 
 ## Current Takeaway
 
