@@ -29,13 +29,19 @@ def load_model_and_tokenizer(model_config: dict):
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     name = model_config["name"]
+    revision = model_config.get("revision")
     dtype_name = model_config.get("dtype", "auto")
     dtype = _torch_dtype(dtype_name, torch)
-    tokenizer = AutoTokenizer.from_pretrained(name, trust_remote_code=True)
+    tokenizer_kwargs = {"trust_remote_code": True}
+    if revision:
+        tokenizer_kwargs["revision"] = revision
+    tokenizer = AutoTokenizer.from_pretrained(name, **tokenizer_kwargs)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
     kwargs = {"trust_remote_code": True}
+    if revision:
+        kwargs["revision"] = revision
     if torch.cuda.is_available():
         kwargs["device_map"] = "auto"
         if dtype is not None:
@@ -85,11 +91,19 @@ def find_transformer_blocks(model) -> list:
 def select_layers(num_layers: int, spec) -> list[int]:
     if spec == "auto":
         raw = [num_layers // 3, num_layers // 2, (2 * num_layers) // 3]
+        layers = sorted({layer for layer in raw if 0 <= layer < num_layers})
     elif isinstance(spec, list):
         raw = [int(layer) for layer in spec]
+        invalid = [layer for layer in raw if layer < 0 or layer >= num_layers]
+        if invalid:
+            raise ValueError(f"invalid layer(s) for {num_layers} layers: {invalid}")
+        layers = sorted(set(raw))
     else:
         raw = [int(part) for part in str(spec).split(",")]
-    layers = sorted({layer for layer in raw if 0 <= layer < num_layers})
+        invalid = [layer for layer in raw if layer < 0 or layer >= num_layers]
+        if invalid:
+            raise ValueError(f"invalid layer(s) for {num_layers} layers: {invalid}")
+        layers = sorted(set(raw))
     if not layers:
         raise ValueError(f"no valid layers selected from {spec!r}")
     return layers
@@ -174,6 +188,7 @@ def generate_text(
     bundle: DirectionBundle | None = None,
     emotion: str | None = None,
     strength: float = 0.0,
+    seed: int | None = None,
 ) -> str:
     import torch
 
@@ -185,18 +200,26 @@ def generate_text(
     temperature = float(generation_config.get("temperature", 0.2))
     top_p = float(generation_config.get("top_p", 0.9))
     do_sample = temperature > 0
+    generate_kwargs = {
+        **encoded,
+        "max_new_tokens": max_new_tokens,
+        "do_sample": do_sample,
+        "pad_token_id": tokenizer.pad_token_id,
+        "eos_token_id": tokenizer.eos_token_id,
+    }
+    if do_sample:
+        generate_kwargs["temperature"] = temperature
+        generate_kwargs["top_p"] = top_p
+        if seed is not None:
+            try:
+                generator = torch.Generator(device=device).manual_seed(seed)
+            except Exception:
+                generator = torch.Generator().manual_seed(seed)
+            generate_kwargs["generator"] = generator
 
     with steering(model, bundle, emotion, strength):
         with torch.no_grad():
-            generated = model.generate(
-                **encoded,
-                max_new_tokens=max_new_tokens,
-                do_sample=do_sample,
-                temperature=temperature if do_sample else None,
-                top_p=top_p if do_sample else None,
-                pad_token_id=tokenizer.pad_token_id,
-                eos_token_id=tokenizer.eos_token_id,
-            )
+            generated = model.generate(**generate_kwargs)
     new_tokens = generated[0, encoded["input_ids"].shape[1] :]
     return tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
 
@@ -244,4 +267,3 @@ def steering(
     finally:
         for handle in handles:
             handle.remove()
-

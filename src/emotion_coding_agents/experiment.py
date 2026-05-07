@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import json
+import platform
 import random
+import sys
 from pathlib import Path
+from importlib import metadata
 
 import numpy as np
 import pandas as pd
@@ -27,10 +30,15 @@ from emotion_coding_agents.modeling import (
 from emotion_coding_agents.plots import write_plots
 
 
-def run_experiment(config_path: str | Path, output_dir: str | Path) -> dict:
+def run_experiment(
+    config_path: str | Path,
+    output_dir: str | Path,
+    *,
+    force: bool = False,
+) -> dict:
     config = load_config(config_path)
     output = Path(output_dir)
-    output.mkdir(parents=True, exist_ok=True)
+    _prepare_output_dir(output, force)
     seed = int(config.get("experiment", {}).get("seed", 0))
     random.seed(seed)
     np.random.seed(seed)
@@ -41,6 +49,7 @@ def run_experiment(config_path: str | Path, output_dir: str | Path) -> dict:
         len(find_transformer_blocks(model)),
         config.get("experiment", {}).get("layers", "auto"),
     )
+    _write_manifest(output, config_path, config, model, tokenizer, layers)
 
     emotions = list(config["emotions"])
     max_examples = int(
@@ -109,13 +118,59 @@ def _probe_failure_trajectory(model, tokenizer, bundle, output: Path) -> pd.Data
     return frame
 
 
+def _prepare_output_dir(output: Path, force: bool) -> None:
+    output.mkdir(parents=True, exist_ok=True)
+    existing = [path for path in output.iterdir() if path.name != ".gitkeep"]
+    if existing and not force:
+        raise FileExistsError(
+            f"output directory is not empty: {output}. Use --force to overwrite."
+        )
+
+
+def _write_manifest(
+    output: Path,
+    config_path: str | Path,
+    config: dict,
+    model,
+    tokenizer,
+    layers: list[int],
+) -> None:
+    manifest = {
+        "config_path": str(config_path),
+        "config": config,
+        "layers": layers,
+        "python": sys.version,
+        "platform": platform.platform(),
+        "packages": _package_versions(
+            ["torch", "transformers", "accelerate", "numpy", "pandas", "matplotlib"]
+        ),
+        "model_commit": getattr(getattr(model, "config", None), "_commit_hash", None),
+        "tokenizer_commit": getattr(tokenizer, "_commit_hash", None),
+        "device": str(next(model.parameters()).device),
+    }
+    with (output / "manifest.json").open("w", encoding="utf-8") as handle:
+        json.dump(manifest, handle, indent=2)
+
+
+def _package_versions(names: list[str]) -> dict[str, str | None]:
+    versions = {}
+    for name in names:
+        try:
+            versions[name] = metadata.version(name)
+        except metadata.PackageNotFoundError:
+            versions[name] = None
+    return versions
+
+
 def _run_generations(model, tokenizer, bundle, config: dict, output: Path) -> pd.DataFrame:
     generation_config = config["model"]
+    seed = int(config.get("experiment", {}).get("seed", 0))
     steering_emotions = config.get("experiment", {}).get("steering_emotions", [])
     strengths = [float(value) for value in config.get("experiment", {}).get("steering_strengths", [0.0])]
     generation_rows = []
     score_rows = []
     jsonl_path = output / "generations.jsonl"
+    generation_index = 0
     with jsonl_path.open("w", encoding="utf-8") as handle:
         for task in generation_tasks():
             conditions = [(None, 0.0)]
@@ -125,6 +180,7 @@ def _run_generations(model, tokenizer, bundle, config: dict, output: Path) -> pd
                         conditions.append((emotion, strength))
             for emotion, strength in conditions:
                 condition = "baseline" if emotion is None else f"{emotion}_{strength:+.1f}"
+                generation_seed = seed + generation_index
                 text = generate_text(
                     model,
                     tokenizer,
@@ -133,12 +189,14 @@ def _run_generations(model, tokenizer, bundle, config: dict, output: Path) -> pd
                     bundle=bundle,
                     emotion=emotion,
                     strength=strength,
+                    seed=generation_seed,
                 )
                 generation_row = {
                     "task_id": task.task_id,
                     "condition": condition,
                     "emotion": emotion or "none",
                     "strength": strength,
+                    "seed": generation_seed,
                     "prompt": task.text,
                     "generation": text,
                 }
@@ -152,11 +210,12 @@ def _run_generations(model, tokenizer, bundle, config: dict, output: Path) -> pd
                         "condition": condition,
                         "emotion": emotion or "none",
                         "strength": strength,
+                        "seed": generation_seed,
                         **scores,
                     }
                 )
+                generation_index += 1
     pd.DataFrame(generation_rows).to_csv(output / "generations.csv", index=False)
     frame = pd.DataFrame(score_rows)
     frame.to_csv(output / "generation_scores.csv", index=False)
     return frame
-
