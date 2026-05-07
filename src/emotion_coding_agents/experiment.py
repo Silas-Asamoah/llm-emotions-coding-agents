@@ -147,9 +147,21 @@ def _write_manifest(
         "model_commit": getattr(getattr(model, "config", None), "_commit_hash", None),
         "tokenizer_commit": getattr(tokenizer, "_commit_hash", None),
         "device": str(next(model.parameters()).device),
+        "cuda_device": _cuda_device_name(),
     }
     with (output / "manifest.json").open("w", encoding="utf-8") as handle:
         json.dump(manifest, handle, indent=2)
+
+
+def _cuda_device_name() -> str | None:
+    try:
+        import torch
+
+        if torch.cuda.is_available():
+            return torch.cuda.get_device_name(0)
+    except ImportError:
+        return None
+    return None
 
 
 def _package_versions(names: list[str]) -> dict[str, str | None]:
@@ -170,9 +182,8 @@ def _run_generations(model, tokenizer, bundle, config: dict, output: Path) -> pd
     generation_rows = []
     score_rows = []
     jsonl_path = output / "generations.jsonl"
-    generation_index = 0
     with jsonl_path.open("w", encoding="utf-8") as handle:
-        for task in generation_tasks():
+        for task_index, task in enumerate(generation_tasks()):
             conditions = [(None, 0.0)]
             for emotion in steering_emotions:
                 for strength in strengths:
@@ -180,7 +191,7 @@ def _run_generations(model, tokenizer, bundle, config: dict, output: Path) -> pd
                         conditions.append((emotion, strength))
             for emotion, strength in conditions:
                 condition = "baseline" if emotion is None else f"{emotion}_{strength:+.1f}"
-                generation_seed = seed + generation_index
+                generation_seed = seed + task_index
                 text = generate_text(
                     model,
                     tokenizer,
@@ -214,7 +225,6 @@ def _run_generations(model, tokenizer, bundle, config: dict, output: Path) -> pd
                         **scores,
                     }
                 )
-                generation_index += 1
     pd.DataFrame(generation_rows).to_csv(output / "generations.csv", index=False)
     frame = pd.DataFrame(score_rows)
     frame.to_csv(output / "generation_scores.csv", index=False)
