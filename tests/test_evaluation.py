@@ -9,6 +9,18 @@ def test_extract_function_source_from_code_fence():
     assert source == "def safe_divide(a, b):\n    return None if b == 0 else a / b"
 
 
+def test_extract_function_source_keeps_return_line():
+    text = """```python
+def parse_duration(text):
+    parts = text.split()
+    return 1
+```"""
+
+    source = extract_function_source(text, "parse_duration")
+
+    assert "return 1" in source
+
+
 def test_evaluate_generation_normalizes_bpe_artifacts():
     text = "ĊdefĠnormalize_codes(codes):ĊĠĠĠĠreturnĠ[code.strip().upper()ĠforĠcodeĠinĠcodes]Ċ"
 

@@ -95,12 +95,13 @@ def extract_function_source(text: str, function_name: str) -> str:
         return ""
     candidate = normalized[match.start() :]
     lines = candidate.splitlines()
+    best = None
     for end in range(1, len(lines) + 1):
         prefix = "\n".join(lines[:end]).strip()
         parsed = _parse_source(prefix, function_name)
         if parsed is not None:
-            return parsed
-    return candidate.strip()
+            best = parsed
+    return best or candidate.strip()
 
 
 def _normalize_generated_text(text: str) -> str:
