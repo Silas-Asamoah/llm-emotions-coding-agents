@@ -338,6 +338,7 @@ def generate_text(
         "do_sample": do_sample,
         "pad_token_id": tokenizer.pad_token_id,
         "eos_token_id": tokenizer.eos_token_id,
+        "use_cache": bool(generation_config.get("use_cache", True)),
     }
     if do_sample:
         generate_kwargs["temperature"] = temperature
