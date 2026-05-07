@@ -2,11 +2,14 @@
 
 _A small-model replication sketch inspired by Anthropic's emotion-concept work._
 
-Anthropic's 2026 paper, "Emotion Concepts and their Function in a Large
-Language Model", reports that Claude Sonnet 4.5 contains internal activation
-directions corresponding to emotion concepts such as `calm`, `afraid`, and
-`desperate`. Their strongest claim is not that the model feels anything. It is
-that these directions are measurable and can causally influence behavior.
+![Emotion-coded activation streams entering a coding-agent decision point](assets/emotion-coding-agent-hero.png)
+
+Anthropic's 2026 paper, [Emotion Concepts and their Function in a Large
+Language Model](https://www.anthropic.com/research/emotion-concepts-function),
+reports that Claude Sonnet 4.5 contains internal activation directions
+corresponding to emotion concepts such as `calm`, `afraid`, and `desperate`.
+Their strongest claim is not that the model feels anything. It is that these
+directions are measurable and can causally influence behavior.
 
 That raises an obvious coding-agent question:
 
@@ -228,26 +231,112 @@ useful as a strong base-model contrast and actually won the toy execution score
 after evaluator fixes. DeepSeek needs a prompt-formatting follow-up before I
 would treat its behavioral numbers as a clean model comparison.
 
-## Next Run
+## Coding-Agent Harness
 
-The next serious run should move from toy function prompts to an actual
-coding-agent harness:
+The final run moved from one-shot toy prompts to an actual retry loop. The model
+now behaves more like a coding agent:
 
-- `Qwen/Qwen2.5-Coder-7B-Instruct` as the primary model
-- StarCoder2 as a base-model contrast
-- Better prompt-format validation for DeepSeek
-- Multiple seeds
-- A real coding harness with visible and hidden tests
-- Baselines with no test-failure pressure
-- Steering only during failure-feedback tokens, not the whole generation
+1. It receives a task and visible examples.
+2. It returns one Python function.
+3. The harness runs visible tests.
+4. If visible tests fail, the model gets the failure message and previous code.
+5. The model retries up to three attempts.
+6. Hidden tests are scored only for analysis.
 
-The central question for the larger model is sharper:
+I ran this harness on Qwen and StarCoder2. DeepSeek was left out of this round
+because the earlier run showed prompt-format artifacts that need separate
+cleanup before an agent-loop comparison is fair. These numbers come from a
+clean rerun with the fixed function extractor, so the harness stops as soon as a
+visible test pass is detected. Generation seeds are fixed by task, condition,
+and attempt so early stopping does not shift later samples.
 
-> Does `desperate` or `frustrated` activation predict reward hacking or
-> hardcoding after repeated failures, even when the output does not contain
-> obvious emotional language?
+![Agent task pass comparison](../results/comparisons/agent-harness/plots/agent_task_pass_comparison.png)
 
-That is the version worth turning into a publishable blog post.
+| Model | Final visible pass | Final hidden pass | Final task pass | Mean attempts used | Mean marker score / attempted generation |
+|---|---:|---:|---:|---:|---:|
+| Qwen2.5-Coder-7B-Instruct | 0.5500 | 0.5500 | 0.5500 | 2.0500 | 0.1220 |
+| StarCoder2-7B | 0.0000 | 0.0000 | 0.0000 | 3.0000 | 3.9000 |
+
+This is the clearest behavioral separation so far. Qwen often produced usable
+function-like code and sometimes recovered after feedback. StarCoder2 kept
+generating dataset-like continuations, examples, prose, or unrelated code, which
+is exactly the kind of base-model contrast I wanted.
+
+![Agent marker comparison](../results/comparisons/agent-harness/plots/agent_marker_comparison.png)
+
+The marker score also became more informative in the agent loop. This is a
+per-attempted-generation average, so models that stop early contribute fewer
+later attempts. StarCoder2's surface text had far more visible markers and
+off-task artifacts, while Qwen remained terse. That does not mean StarCoder2 was
+"more emotional"; it means the visible telemetry tracked loss of
+instruction-following in this harness.
+
+![Agent negative activation comparison](../results/comparisons/agent-harness/plots/agent_negative_activation_comparison.png)
+
+The observed-prompt negative-emotion projection was also higher for StarCoder2
+than Qwen:
+
+| Model | Mean observed negative projection |
+|---|---:|
+| StarCoder2-7B | 0.4535 |
+| Qwen2.5-Coder-7B-Instruct | 0.3898 |
+
+This is still not a predictive result, and it is attempt-weighted: Qwen stops
+early more often, while StarCoder2 reaches the full retry budget. It is a useful
+signpost: the model with more off-task retry behavior also showed higher
+average projection onto the negative emotion directions in the observed
+agent-loop prompts.
+
+## Current Takeaway
+
+The strongest version of the result is now:
+
+> Emotion-labeled activation directions are measurable in open coding models,
+> they differ across coding-failure and retry contexts, and the retrying
+> coding-agent harness exposes behavior that one-shot prompts hid.
+
+The practical result is also sharper:
+
+> Visible emotional language is not the main signal. Agent-loop behavior,
+> hidden-test performance, retry recovery, and off-task continuation are better
+> observables.
+
+Naive steering still does not look reliable yet. In the clean Qwen agent
+harness, `calm_+1.0` and `desperate_+1.0` both reached `0.750` task pass rate,
+above the `0.500` baseline, but each condition has only four tasks. That is an
+interesting effect to replicate, not a conclusion.
+
+## Other Experiments This Enables
+
+One obvious experiment family is an emotion version of [Thought
+Anchors](https://arxiv.org/abs/2506.19143), the 2025 work by Paul Bogdan, Uzay
+Macar, Neel Nanda, and Arthur Conmy on sentence-level attribution for reasoning
+traces. Instead of looking for planning or backtracking anchors in
+chain-of-thought, this setup could look for emotion-like anchors in agent traces:
+
+- Does one failure-feedback sentence sharply raise `desperate` or `stuck`
+  projection for all later attempts?
+- If that sentence is paraphrased to sound calm, does retry behavior change?
+- Which visible-test failure messages become anchors for later hardcoding?
+- Are there receiver heads or attention patterns that broadcast failure context
+  into later code tokens?
+- Can attention suppression or activation patching remove the bad anchor without
+  reducing useful debugging?
+
+Other natural experiments:
+
+- **Emotion anchors:** sentence-level attribution over retry traces, modeled on
+  Thought Anchors, but using emotion-direction activation and task outcomes.
+- **Failure-message rewrites:** same bug, same tests, different emotional tone
+  in the feedback message.
+- **Steering only feedback tokens:** apply steering while the model reads test
+  failure output, not while it writes code.
+- **Reward-hacking probes:** add tasks where visible examples invite
+  hardcoding, then test whether `desperate` activation predicts shortcut use.
+- **SAE features:** replace hand-built directions with sparse autoencoder
+  features for failure, pressure, shortcutting, and recovery.
+- **Model-size ladder:** run the harness across Qwen coder sizes to see whether
+  retry recovery and emotion-direction separation scale together.
 
 ## Reproducibility
 
@@ -274,6 +363,16 @@ The main comparison artifacts are in:
 ```text
 results/comparisons/main-7b/
 ```
+
+The retrying coding-agent harness artifacts are in:
+
+```text
+results/agent-runs/
+results/comparisons/agent-harness/
+```
+
+The agent attempt CSVs include the deterministic generation seed used for each
+task, condition, and attempt.
 
 The current result should be read as a first working slice, not as evidence that
 small coding models have functional emotions.
