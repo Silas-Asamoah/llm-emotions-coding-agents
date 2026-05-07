@@ -34,6 +34,8 @@ up, and visible frustration markers to appear. Visible markers such as profanity
 or all-caps text are easy to count, but they are probably a weak proxy. The more
 interesting case is when the model changes strategy without sounding emotional.
 
+![Hand-drawn overview of emotion directions flowing through a coding-agent retry loop](assets/excalidraw-agent-loop.png)
+
 ## Smoke Experiment
 
 The first run used:
@@ -75,7 +77,7 @@ for `desperate` and `calm` at positive and negative strengths.
 
 ## Result 1: Later Failure Prompts Had Higher Projections
 
-![Activation trajectory](../results/runs/smoke-qwen-coder-0_5b/plots/activation_trajectory.png)
+![Activation trajectory](assets/plots/smoke-activation-excalidraw.png)
 
 The cleanest signal in the smoke run is that projections generally increase on
 later failure-pressure prompts.
@@ -99,13 +101,13 @@ trajectory, but the next version needs stronger controls.
 
 ## Result 2: Visible Emotional Markers Were Not the Main Story
 
-![Behavior markers](../results/runs/smoke-qwen-coder-0_5b/plots/behavior_markers.png)
+![Behavior markers](assets/plots/smoke-behavior-markers-excalidraw.png)
 
 The visible marker score was not especially informative in this run. Baseline
 generations averaged `1.333` visible markers per response. The steered
 conditions ranged from `0.0` to `0.667` under the current regex scoring.
 
-![Aggregate marker score](../results/runs/smoke-qwen-coder-0_5b/plots/aggregate_marker_score.png)
+![Aggregate marker score](assets/plots/smoke-aggregate-markers-excalidraw.png)
 
 The rerun uses the same sampling seed for every condition within each task, so
 differences are less confounded by sampling variance than the first attempt.
@@ -155,7 +157,7 @@ I also added an offline execution evaluator. It extracts the requested function,
 normalizes byte-level artifacts such as `Ċ` and `Ġ`, and runs visible and hidden
 tests for the three toy tasks.
 
-![Negative activation by stage](../results/comparisons/main-7b/plots/negative_activation_by_stage.png)
+![Negative activation by stage](assets/plots/main-negative-activation-excalidraw.png)
 
 The activation result is broadly consistent with the smoke run, with one caveat:
 the trajectory is not monotonic. Stage 4 is higher than stage 0 for all three
@@ -174,7 +176,7 @@ that differ across coding-failure prompts.
 
 ## Execution Behavior
 
-![Task pass by condition](../results/comparisons/main-7b/plots/task_pass_by_condition.png)
+![Task pass by condition](assets/plots/main-task-pass-excalidraw.png)
 
 After fixing the evaluator to allow common generated-code builtins such as
 `map` and exception classes such as `ZeroDivisionError`, StarCoder2 had the best
@@ -201,7 +203,7 @@ dropped to `0.333`.
 
 ## Visible Markers
 
-![Marker score by condition](../results/comparisons/main-7b/plots/marker_score_by_condition.png)
+![Marker score by condition](assets/plots/main-marker-score-excalidraw.png)
 
 Visible emotion markers again underperformed as the main signal. Qwen and
 DeepSeek had almost no visible marker hits, despite meaningful differences in
@@ -250,7 +252,7 @@ clean rerun with the fixed function extractor, so the harness stops as soon as a
 visible test pass is detected. Generation seeds are fixed by task, condition,
 and attempt so early stopping does not shift later samples.
 
-![Agent task pass comparison](../results/comparisons/agent-harness/plots/agent_task_pass_comparison.png)
+![Agent task pass comparison](assets/plots/agent-task-pass-excalidraw.png)
 
 | Model | Final visible pass | Final hidden pass | Final task pass | Mean attempts used | Mean marker score / attempted generation |
 |---|---:|---:|---:|---:|---:|
@@ -262,7 +264,7 @@ function-like code and sometimes recovered after feedback. StarCoder2 kept
 generating dataset-like continuations, examples, prose, or unrelated code, which
 is exactly the kind of base-model contrast I wanted.
 
-![Agent marker comparison](../results/comparisons/agent-harness/plots/agent_marker_comparison.png)
+![Agent marker comparison](assets/plots/agent-marker-score-excalidraw.png)
 
 The marker score also became more informative in the agent loop. This is a
 per-attempted-generation average, so models that stop early contribute fewer
@@ -271,7 +273,7 @@ off-task artifacts, while Qwen remained terse. That does not mean StarCoder2 was
 "more emotional"; it means the visible telemetry tracked loss of
 instruction-following in this harness.
 
-![Agent negative activation comparison](../results/comparisons/agent-harness/plots/agent_negative_activation_comparison.png)
+![Agent negative activation comparison](assets/plots/agent-negative-activation-excalidraw.png)
 
 The observed-prompt negative-emotion projection was also higher for StarCoder2
 than Qwen:
@@ -373,6 +375,18 @@ results/comparisons/agent-harness/
 
 The agent attempt CSVs include the deterministic generation seed used for each
 task, condition, and attempt.
+
+Blog-ready Excalidraw-style figures are generated from the CSV artifacts by:
+
+```text
+scripts/make_blog_excalidraw_plots.py
+```
+
+and saved in:
+
+```text
+blog/assets/plots/
+```
 
 The current result should be read as a first working slice, not as evidence that
 small coding models have functional emotions.
