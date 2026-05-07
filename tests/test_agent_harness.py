@@ -1,4 +1,9 @@
-from emotion_coding_agents.agent_harness import AGENT_TASKS, _conditions, _format_tests
+from emotion_coding_agents.agent_harness import (
+    AGENT_TASKS,
+    _attempt_seed,
+    _conditions,
+    _format_tests,
+)
 
 
 def test_agent_tasks_have_visible_and_hidden_tests():
@@ -24,3 +29,14 @@ def test_format_tests_includes_args_and_expected_values():
 
     assert "args=" in formatted
     assert "-> 3" in formatted
+
+
+def test_attempt_seed_depends_on_logical_attempt_not_run_order():
+    first = _attempt_seed(13, "parse_duration", "baseline", 0)
+    same = _attempt_seed(13, "parse_duration", "baseline", 0)
+    next_attempt = _attempt_seed(13, "parse_duration", "baseline", 1)
+    other_condition = _attempt_seed(13, "parse_duration", "calm_+1.0", 0)
+
+    assert first == same
+    assert first != next_attempt
+    assert first != other_condition

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import random
 from dataclasses import dataclass
@@ -186,7 +187,6 @@ def _run_agent_tasks(
     activation_rows = []
     seed = int(config.get("experiment", {}).get("seed", 0))
     conditions = _conditions(config)
-    generation_index = 0
 
     for task in AGENT_TASKS:
         for emotion, strength in conditions:
@@ -199,6 +199,7 @@ def _run_agent_tasks(
                 activation_rows.extend(
                     _score_prompt_activation(prompt, task.task_id, condition, attempt, bundle, model, tokenizer)
                 )
+                generation_seed = _attempt_seed(seed, task.task_id, condition, attempt)
                 generation = generate_text(
                     model,
                     tokenizer,
@@ -207,9 +208,8 @@ def _run_agent_tasks(
                     bundle=bundle,
                     emotion=emotion,
                     strength=strength,
-                    seed=seed + generation_index,
+                    seed=generation_seed,
                 )
-                generation_index += 1
                 result = evaluate_generation(generation, _function_task(task))
                 scores = score_generation(generation)
                 scores["aggregate_marker_score"] = aggregate_marker_score(scores)
@@ -220,6 +220,7 @@ def _run_agent_tasks(
                         "emotion": emotion or "none",
                         "strength": strength,
                         "attempt": attempt,
+                        "seed": generation_seed,
                         "visible_pass": result["visible_pass"],
                         "hidden_pass": result["hidden_pass"],
                         "task_pass": result["task_pass"],
@@ -280,6 +281,12 @@ def _conditions(config: dict[str, Any]) -> list[tuple[str | None, float]]:
             if strength != 0:
                 conditions.append((emotion, strength))
     return conditions
+
+
+def _attempt_seed(base_seed: int, task_id: str, condition: str, attempt: int) -> int:
+    key = f"{base_seed}:{task_id}:{condition}:{attempt}".encode("utf-8")
+    digest = hashlib.sha256(key).hexdigest()
+    return int(digest[:8], 16)
 
 
 def _initial_prompt(task: AgentTask) -> list[str]:

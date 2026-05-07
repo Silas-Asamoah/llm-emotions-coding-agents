@@ -60,19 +60,22 @@ def _rescore_attempts(run_path: Path) -> pd.DataFrame:
             result = evaluate_generation(row["generation"], TASKS[row["task_id"]])
             scores = score_generation(row["generation"])
             scores["aggregate_marker_score"] = aggregate_marker_score(scores)
+            metadata = {
+                key: row[key]
+                for key in [
+                    "task_id",
+                    "condition",
+                    "emotion",
+                    "strength",
+                    "attempt",
+                    "generation",
+                ]
+            }
+            if "seed" in row:
+                metadata["seed"] = row["seed"]
             rows.append(
                 {
-                    **{
-                        key: row[key]
-                        for key in [
-                            "task_id",
-                            "condition",
-                            "emotion",
-                            "strength",
-                            "attempt",
-                            "generation",
-                        ]
-                    },
+                    **metadata,
                     "visible_pass": result["visible_pass"],
                     "hidden_pass": result["hidden_pass"],
                     "task_pass": result["task_pass"],
