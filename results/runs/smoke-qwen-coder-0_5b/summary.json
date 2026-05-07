@@ -32,7 +32,7 @@
   },
   "mean_marker_score_by_condition": {
     "baseline": 1.3333,
-    "calm_+1.0": 0.0,
+    "calm_+1.0": 0.6667,
     "calm_-1.0": 0.0,
     "desperate_+1.0": 0.0,
     "desperate_-1.0": 0.0
