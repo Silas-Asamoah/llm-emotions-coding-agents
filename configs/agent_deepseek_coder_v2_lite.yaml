@@ -1,0 +1,28 @@
+model:
+  name: deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct
+  dtype: bfloat16
+  device: cuda
+  max_new_tokens: 360
+  temperature: 0.2
+  top_p: 0.9
+
+experiment:
+  seed: 13
+  layers: auto
+  max_direction_examples_per_emotion: 8
+  steering_strengths: [-1.0, 1.0]
+  steering_emotions: [desperate, calm]
+
+agent:
+  max_attempts: 3
+  steering_strengths: [-1.0, 1.0]
+  steering_emotions: [desperate, calm]
+
+emotions:
+  - calm
+  - patient
+  - confident
+  - frustrated
+  - desperate
+  - stuck
+  - stressed
