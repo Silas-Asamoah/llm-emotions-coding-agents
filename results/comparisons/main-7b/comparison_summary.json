@@ -1,0 +1,58 @@
+{
+  "runs": [
+    "results/runs/main-qwen-coder-7b",
+    "results/runs/main-deepseek-coder-6_7b",
+    "results/runs/main-starcoder2-7b"
+  ],
+  "num_models": 3,
+  "summary": [
+    {
+      "run": "main-qwen-coder-7b",
+      "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "layers": "9,14,18",
+      "cuda_device": "NVIDIA A100-PCIE-40GB",
+      "num_generations": 27,
+      "mean_marker_score": 0.037,
+      "valid_python_rate": 1.0,
+      "visible_pass_rate": 0.6296,
+      "hidden_pass_rate": 0.4815,
+      "task_pass_rate": 0.4815,
+      "mean_negative_activation": 0.5063,
+      "mean_positive_activation": 0.475
+    },
+    {
+      "run": "main-deepseek-coder-6_7b",
+      "model": "deepseek-ai/deepseek-coder-6.7b-instruct",
+      "layers": "10,16,21",
+      "cuda_device": "NVIDIA A100-PCIE-40GB",
+      "num_generations": 27,
+      "mean_marker_score": 0.037,
+      "valid_python_rate": 0.7037,
+      "visible_pass_rate": 0.2222,
+      "hidden_pass_rate": 0.2593,
+      "task_pass_rate": 0.2222,
+      "mean_negative_activation": 0.4699,
+      "mean_positive_activation": 0.4497
+    },
+    {
+      "run": "main-starcoder2-7b",
+      "model": "bigcode/starcoder2-7b",
+      "layers": "10,16,21",
+      "cuda_device": "NVIDIA A100-PCIE-40GB",
+      "num_generations": 27,
+      "mean_marker_score": 1.3704,
+      "valid_python_rate": 0.963,
+      "visible_pass_rate": 0.3704,
+      "hidden_pass_rate": 0.3704,
+      "task_pass_rate": 0.3704,
+      "mean_negative_activation": 0.5165,
+      "mean_positive_activation": 0.4986
+    }
+  ],
+  "plots": [
+    "plots/negative_activation_by_stage.png",
+    "plots/marker_score_by_condition.png",
+    "plots/positive_vs_negative_activation.png",
+    "plots/task_pass_by_condition.png"
+  ]
+}

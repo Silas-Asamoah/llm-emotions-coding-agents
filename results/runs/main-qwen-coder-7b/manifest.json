@@ -1,0 +1,57 @@
+{
+  "config_path": "configs/jarvis_qwen_coder_7b.yaml",
+  "config": {
+    "model": {
+      "name": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "dtype": "bfloat16",
+      "device": "cuda",
+      "max_new_tokens": 220,
+      "temperature": 0.2,
+      "top_p": 0.9
+    },
+    "experiment": {
+      "seed": 7,
+      "layers": "auto",
+      "max_direction_examples_per_emotion": 8,
+      "steering_strengths": [
+        -1.0,
+        0.0,
+        1.0
+      ],
+      "steering_emotions": [
+        "desperate",
+        "frustrated",
+        "calm",
+        "patient"
+      ]
+    },
+    "emotions": [
+      "calm",
+      "patient",
+      "confident",
+      "frustrated",
+      "desperate",
+      "stuck",
+      "stressed"
+    ]
+  },
+  "layers": [
+    9,
+    14,
+    18
+  ],
+  "python": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+  "platform": "Linux-6.8.0-100-generic-x86_64-with-glibc2.35",
+  "packages": {
+    "torch": "2.11.0",
+    "transformers": "5.7.0",
+    "accelerate": "1.13.0",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "matplotlib": "3.10.9"
+  },
+  "model_commit": "c03e6d358207e414f1eca0bb1891e29f1db0e242",
+  "tokenizer_commit": null,
+  "device": "cuda:0",
+  "cuda_device": "NVIDIA A100-PCIE-40GB"
+}

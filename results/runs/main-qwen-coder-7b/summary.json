@@ -1,0 +1,44 @@
+{
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "emotions": [
+    "calm",
+    "patient",
+    "confident",
+    "frustrated",
+    "desperate",
+    "stuck",
+    "stressed"
+  ],
+  "layers": [
+    9,
+    14,
+    18
+  ],
+  "num_failure_prompts": 5,
+  "num_generations": 27,
+  "plots": [
+    "plots/activation_trajectory.png",
+    "plots/behavior_markers.png",
+    "plots/aggregate_marker_score.png"
+  ],
+  "mean_activation_by_emotion": {
+    "calm": 0.435,
+    "confident": 0.4987,
+    "desperate": 0.5107,
+    "frustrated": 0.5358,
+    "patient": 0.4913,
+    "stressed": 0.4577,
+    "stuck": 0.5209
+  },
+  "mean_marker_score_by_condition": {
+    "baseline": 0.0,
+    "calm_+1.0": 0.0,
+    "calm_-1.0": 0.0,
+    "desperate_+1.0": 0.0,
+    "desperate_-1.0": 0.0,
+    "frustrated_+1.0": 0.0,
+    "frustrated_-1.0": 0.0,
+    "patient_+1.0": 0.0,
+    "patient_-1.0": 0.3333
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "model": "deepseek-ai/deepseek-coder-6.7b-instruct",
+  "emotions": [
+    "calm",
+    "patient",
+    "confident",
+    "frustrated",
+    "desperate",
+    "stuck",
+    "stressed"
+  ],
+  "layers": [
+    10,
+    16,
+    21
+  ],
+  "num_failure_prompts": 5,
+  "num_generations": 27,
+  "plots": [
+    "plots/activation_trajectory.png",
+    "plots/behavior_markers.png",
+    "plots/aggregate_marker_score.png"
+  ],
+  "mean_activation_by_emotion": {
+    "calm": 0.4408,
+    "confident": 0.4428,
+    "desperate": 0.4597,
+    "frustrated": 0.4963,
+    "patient": 0.4655,
+    "stressed": 0.4534,
+    "stuck": 0.4701
+  },
+  "mean_marker_score_by_condition": {
+    "baseline": 0.0,
+    "calm_+1.0": 0.0,
+    "calm_-1.0": 0.0,
+    "desperate_+1.0": 0.0,
+    "desperate_-1.0": 0.3333,
+    "frustrated_+1.0": 0.0,
+    "frustrated_-1.0": 0.0,
+    "patient_+1.0": 0.0,
+    "patient_-1.0": 0.0
+  }
+}
