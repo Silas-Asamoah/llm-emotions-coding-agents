@@ -210,15 +210,13 @@ def generate_text(
     if do_sample:
         generate_kwargs["temperature"] = temperature
         generate_kwargs["top_p"] = top_p
-        if seed is not None:
-            try:
-                generator = torch.Generator(device=device).manual_seed(seed)
-            except Exception:
-                generator = torch.Generator().manual_seed(seed)
-            generate_kwargs["generator"] = generator
 
     with steering(model, bundle, emotion, strength):
         with torch.no_grad():
+            if seed is not None:
+                torch.manual_seed(seed)
+                if torch.cuda.is_available():
+                    torch.cuda.manual_seed_all(seed)
             generated = model.generate(**generate_kwargs)
     new_tokens = generated[0, encoded["input_ids"].shape[1] :]
     return tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
