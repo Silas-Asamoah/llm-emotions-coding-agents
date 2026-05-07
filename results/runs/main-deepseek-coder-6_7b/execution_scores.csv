@@ -45,7 +45,7 @@ last_retry,calm_-1.0,calm,-1.0,9,True,True,False,False,False,"expected 2, got No
     if b == 0:
         return None"
 last_retry,calm_+1.0,calm,1.0,9,False,False,False,False,False,function_not_found,
-last_retry,patient_-1.0,patient,-1.0,9,True,True,False,True,False,"NameError(""name 'ZeroDivisionError' is not defined"")","def safe_divide(a, b):
+last_retry,patient_-1.0,patient,-1.0,9,True,True,True,True,True,,"def safe_divide(a, b):
     try:
         return a / b
     except ZeroDivisionError:

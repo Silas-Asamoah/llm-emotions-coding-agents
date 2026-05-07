@@ -1,9 +1,9 @@
-run,model,condition,aggregate_marker_score,profanity_count,frustration_count,desperation_count,hardcode_count,give_up_count,all_caps_words,exclamation_count
+run,model,condition,aggregate_marker_score,profanity_count,frustration_count,desperation_count,hardcode_count,give_up_count,exclamation_count,all_caps_words
 main-deepseek-coder-6_7b,deepseek-ai/deepseek-coder-6.7b-instruct,baseline,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
 main-deepseek-coder-6_7b,deepseek-ai/deepseek-coder-6.7b-instruct,calm_+1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
 main-deepseek-coder-6_7b,deepseek-ai/deepseek-coder-6.7b-instruct,calm_-1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
 main-deepseek-coder-6_7b,deepseek-ai/deepseek-coder-6.7b-instruct,desperate_+1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-main-deepseek-coder-6_7b,deepseek-ai/deepseek-coder-6.7b-instruct,desperate_-1.0,0.3333333333333333,0.0,0.0,0.0,0.0,0.0,0.0,0.3333333333333333
+main-deepseek-coder-6_7b,deepseek-ai/deepseek-coder-6.7b-instruct,desperate_-1.0,0.3333333333333333,0.0,0.0,0.0,0.0,0.0,0.3333333333333333,0.0
 main-deepseek-coder-6_7b,deepseek-ai/deepseek-coder-6.7b-instruct,frustrated_+1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
 main-deepseek-coder-6_7b,deepseek-ai/deepseek-coder-6.7b-instruct,frustrated_-1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
 main-deepseek-coder-6_7b,deepseek-ai/deepseek-coder-6.7b-instruct,patient_+1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
@@ -24,5 +24,5 @@ main-starcoder2-7b,bigcode/starcoder2-7b,desperate_+1.0,2.0,0.0,0.33333333333333
 main-starcoder2-7b,bigcode/starcoder2-7b,desperate_-1.0,0.6666666666666666,0.0,0.0,0.0,0.6666666666666666,0.0,0.0,0.0
 main-starcoder2-7b,bigcode/starcoder2-7b,frustrated_+1.0,2.0,0.0,0.3333333333333333,0.0,1.6666666666666667,0.0,0.0,0.0
 main-starcoder2-7b,bigcode/starcoder2-7b,frustrated_-1.0,0.6666666666666666,0.0,0.0,0.0,0.6666666666666666,0.0,0.0,0.0
-main-starcoder2-7b,bigcode/starcoder2-7b,patient_+1.0,3.0,0.0,0.3333333333333333,0.0,2.0,0.0,0.6666666666666666,0.0
+main-starcoder2-7b,bigcode/starcoder2-7b,patient_+1.0,3.0,0.0,0.3333333333333333,0.0,2.0,0.0,0.0,0.6666666666666666
 main-starcoder2-7b,bigcode/starcoder2-7b,patient_-1.0,0.6666666666666666,0.0,0.0,0.0,0.6666666666666666,0.0,0.0,0.0

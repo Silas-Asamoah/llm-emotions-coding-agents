@@ -28,9 +28,9 @@
       "num_generations": 27,
       "mean_marker_score": 0.037,
       "valid_python_rate": 0.7037,
-      "visible_pass_rate": 0.2222,
+      "visible_pass_rate": 0.2593,
       "hidden_pass_rate": 0.2593,
-      "task_pass_rate": 0.2222,
+      "task_pass_rate": 0.2593,
       "mean_negative_activation": 0.4699,
       "mean_positive_activation": 0.4497
     },
@@ -42,9 +42,9 @@
       "num_generations": 27,
       "mean_marker_score": 1.3704,
       "valid_python_rate": 0.963,
-      "visible_pass_rate": 0.3704,
-      "hidden_pass_rate": 0.3704,
-      "task_pass_rate": 0.3704,
+      "visible_pass_rate": 0.6296,
+      "hidden_pass_rate": 0.6296,
+      "task_pass_rate": 0.6296,
       "mean_negative_activation": 0.5165,
       "mean_positive_activation": 0.4986
     }
