@@ -1,5 +1,6 @@
 model:
   name: mistralai/Devstral-Small-2507
+  tokenizer_backend: mistral_common
   dtype: bfloat16
   device: cuda
   max_new_tokens: 360

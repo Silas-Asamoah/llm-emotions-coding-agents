@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from dataclasses import dataclass
-from typing import Iterator
+from typing import Any, Iterator
 
 import numpy as np
 
@@ -32,13 +32,17 @@ def load_model_and_tokenizer(model_config: dict):
     revision = model_config.get("revision")
     device_name = model_config.get("device", "auto")
     dtype_name = model_config.get("dtype", "auto")
+    tokenizer_backend = model_config.get("tokenizer_backend", "auto")
     dtype = _torch_dtype(dtype_name, torch)
-    tokenizer_kwargs = {"trust_remote_code": True}
-    if revision:
-        tokenizer_kwargs["revision"] = revision
-    tokenizer = AutoTokenizer.from_pretrained(name, **tokenizer_kwargs)
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
+    if tokenizer_backend == "mistral_common":
+        tokenizer = _load_mistral_common_tokenizer(name)
+    else:
+        tokenizer_kwargs = {"trust_remote_code": True}
+        if revision:
+            tokenizer_kwargs["revision"] = revision
+        tokenizer = AutoTokenizer.from_pretrained(name, **tokenizer_kwargs)
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
 
     kwargs = {"trust_remote_code": True}
     if revision:
@@ -59,6 +63,90 @@ def load_model_and_tokenizer(model_config: dict):
         model.to(device)
     model.eval()
     return model, tokenizer
+
+
+class MistralCommonTokenizerAdapter:
+    """Small adapter for Mistral's official tokenizer API."""
+
+    uses_mistral_common = True
+    chat_template = True
+
+    def __init__(self, tokenizer: Any):
+        self._tokenizer = tokenizer
+        self._base_tokenizer = tokenizer.instruct_tokenizer.tokenizer
+        self.bos_token_id = self._base_tokenizer.bos_id
+        self.eos_token_id = self._base_tokenizer.eos_id
+        pad_token_id = self._base_tokenizer.pad_id
+        self.pad_token_id = pad_token_id if pad_token_id is not None else self.eos_token_id
+        self.pad_token = "<pad>"
+        self.eos_token = "</s>"
+
+    def __len__(self) -> int:
+        return int(self._base_tokenizer.n_words)
+
+    def __call__(
+        self,
+        text: str,
+        *,
+        return_tensors: str = "pt",
+        truncation: bool = False,
+        max_length: int | None = None,
+    ) -> dict[str, Any]:
+        tokens = self._base_tokenizer.encode(text, bos=True, eos=False)
+        return self._tensor_batch(tokens, return_tensors, truncation, max_length)
+
+    def encode_chat_prompt(
+        self,
+        text: str,
+        *,
+        return_tensors: str = "pt",
+        truncation: bool = False,
+        max_length: int | None = None,
+    ) -> dict[str, Any]:
+        from mistral_common.protocol.instruct.messages import UserMessage
+        from mistral_common.protocol.instruct.request import ChatCompletionRequest
+
+        request = ChatCompletionRequest(messages=[UserMessage(content=text)])
+        tokens = self._tokenizer.encode_chat_completion(request).tokens
+        return self._tensor_batch(tokens, return_tensors, truncation, max_length)
+
+    def decode(self, token_ids, *, skip_special_tokens: bool = True) -> str:
+        if hasattr(token_ids, "tolist"):
+            token_ids = token_ids.tolist()
+        decoded = self._tokenizer.decode([int(token_id) for token_id in token_ids])
+        if skip_special_tokens:
+            return decoded.strip()
+        return decoded
+
+    def _tensor_batch(
+        self,
+        tokens: list[int],
+        return_tensors: str,
+        truncation: bool,
+        max_length: int | None,
+    ) -> dict[str, Any]:
+        if truncation and max_length is not None:
+            tokens = tokens[-max_length:]
+        if return_tensors != "pt":
+            return {"input_ids": [tokens], "attention_mask": [[1] * len(tokens)]}
+
+        import torch
+
+        input_ids = torch.tensor([tokens], dtype=torch.long)
+        attention_mask = torch.ones_like(input_ids)
+        return {"input_ids": input_ids, "attention_mask": attention_mask}
+
+
+def _load_mistral_common_tokenizer(name: str) -> MistralCommonTokenizerAdapter:
+    try:
+        from mistral_common.tokens.tokenizers.mistral import MistralTokenizer
+    except ImportError as exc:
+        raise ImportError(
+            "mistral-common is required for model.tokenizer_backend='mistral_common'. "
+            "Install it with `pip install mistral-common>=1.7.0`."
+        ) from exc
+
+    return MistralCommonTokenizerAdapter(MistralTokenizer.from_hf_hub(name))
 
 
 def _torch_dtype(dtype_name: str, torch_module):
@@ -116,15 +204,18 @@ def mean_activations(model, tokenizer, texts: list[str], layers: list[int]) -> n
     import torch
 
     device = next(model.parameters()).device
+    vocab_size = _model_vocab_size(model)
     outputs: list[np.ndarray] = []
     with torch.no_grad():
         for text in texts:
-            encoded = tokenizer(
+            encoded = _encode_prompt(
+                tokenizer,
                 text,
-                return_tensors="pt",
+                chat=False,
                 truncation=True,
                 max_length=1024,
             )
+            _validate_token_ids(encoded, vocab_size)
             encoded = {key: value.to(device) for key, value in encoded.items()}
             result = model(**encoded, output_hidden_states=True)
             mask = encoded["attention_mask"].bool()[0]
@@ -173,6 +264,8 @@ def activation_scores(
 
 
 def format_user_prompt(tokenizer, text: str) -> str:
+    if getattr(tokenizer, "uses_mistral_common", False):
+        return text
     if getattr(tokenizer, "chat_template", None):
         messages = [{"role": "user", "content": text}]
         return tokenizer.apply_chat_template(
@@ -196,8 +289,8 @@ def generate_text(
     import torch
 
     device = next(model.parameters()).device
-    formatted = format_user_prompt(tokenizer, prompt)
-    encoded = tokenizer(formatted, return_tensors="pt", truncation=True, max_length=2048)
+    encoded = _encode_prompt(tokenizer, prompt, chat=True, truncation=True, max_length=2048)
+    _validate_token_ids(encoded, _model_vocab_size(model))
     encoded = {key: value.to(device) for key, value in encoded.items()}
     max_new_tokens = int(generation_config.get("max_new_tokens", 160))
     temperature = float(generation_config.get("temperature", 0.2))
@@ -223,6 +316,44 @@ def generate_text(
             generated = model.generate(**generate_kwargs)
     new_tokens = generated[0, encoded["input_ids"].shape[1] :]
     return tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
+
+
+def _encode_prompt(
+    tokenizer,
+    text: str,
+    *,
+    chat: bool,
+    truncation: bool,
+    max_length: int,
+) -> dict[str, Any]:
+    if chat and hasattr(tokenizer, "encode_chat_prompt"):
+        return tokenizer.encode_chat_prompt(
+            text,
+            return_tensors="pt",
+            truncation=truncation,
+            max_length=max_length,
+        )
+    formatted = format_user_prompt(tokenizer, text) if chat else text
+    return tokenizer(
+        formatted,
+        return_tensors="pt",
+        truncation=truncation,
+        max_length=max_length,
+    )
+
+
+def _model_vocab_size(model) -> int:
+    return int(model.get_input_embeddings().weight.shape[0])
+
+
+def _validate_token_ids(encoded: dict[str, Any], vocab_size: int) -> None:
+    input_ids = encoded["input_ids"]
+    max_id = int(input_ids.max().item())
+    if max_id >= vocab_size:
+        raise ValueError(
+            f"tokenizer produced token id {max_id}, but model embeddings only "
+            f"cover ids < {vocab_size}. Use the model's official tokenizer backend."
+        )
 
 
 @contextmanager
