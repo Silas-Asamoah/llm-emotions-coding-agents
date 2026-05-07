@@ -36,7 +36,7 @@ interesting case is when the model changes strategy without sounding emotional.
 The first run used:
 
 - Model: `Qwen/Qwen2.5-Coder-0.5B-Instruct`
-- GPU: JarvisLabs L4
+- GPU: NVIDIA L4 on JarvisLabs
 - Emotion directions: `calm`, `patient`, `confident`, `frustrated`,
   `desperate`, `stuck`, `stressed`
 - Layers: 8, 12, 16
@@ -70,12 +70,12 @@ Then I probe five coding-agent failure prompts:
 For generation, I compare baseline responses against simple activation steering
 for `desperate` and `calm` at positive and negative strengths.
 
-## Result 1: Failure Pressure Moved the Directions
+## Result 1: Later Failure Prompts Had Higher Projections
 
 ![Activation trajectory](../results/runs/smoke-qwen-coder-0_5b/plots/activation_trajectory.png)
 
-The cleanest signal in the smoke run is that projections generally increase as
-the prompt moves from "task start" to "deadline pressure".
+The cleanest signal in the smoke run is that projections generally increase on
+later failure-pressure prompts.
 
 Mean projection by stage:
 
@@ -87,32 +87,36 @@ Mean projection by stage:
 | 3 | 0.446 | 0.469 | 0.533 | 0.533 | 0.417 | 0.518 | 0.546 |
 | 4 | 0.494 | 0.538 | 0.578 | 0.579 | 0.645 | 0.530 | 0.602 |
 
-The obvious caveat: all the directions move upward. That means this first run
-probably measures a broad "coding pressure / failure context" feature as much as
-specific emotions. That is still useful. It tells us the pipeline can detect
-structured activation changes across a coding-agent trajectory, but the next
-version needs stronger controls.
+The obvious caveat: each stage is a different prompt, not repeated measurements
+under a controlled pressure intervention. Also, all the directions move upward.
+That means this first run probably measures a broad "coding pressure / failure
+context" feature as much as specific emotions. That is still useful. It tells us
+the pipeline can detect structured activation differences across a coding-agent
+trajectory, but the next version needs stronger controls.
 
 ## Result 2: Visible Emotional Markers Were Not the Main Story
 
 ![Behavior markers](../results/runs/smoke-qwen-coder-0_5b/plots/behavior_markers.png)
 
 The visible marker score was not especially informative in this run. Baseline
-generations averaged `1.333` visible markers per response, while the steered
-conditions averaged `0.0` under the current regex scoring.
+generations averaged `1.333` visible markers per response. The steered
+conditions ranged from `0.0` to `0.667` under the current regex scoring.
 
 ![Aggregate marker score](../results/runs/smoke-qwen-coder-0_5b/plots/aggregate_marker_score.png)
 
-That does not mean steering made the model safer or calmer. Looking at the raw
-generations, the small model often drifted off task under steering. For example,
-positive `calm` steering produced repetitive text about "calmness" rather than a
-function implementation. Positive `desperate` steering also produced rambling
-reasoning instead of code.
+The rerun uses the same sampling seed for every condition within each task, so
+differences are less confounded by sampling variance than the first attempt.
+Still, this does not mean steering made the model safer or calmer. Looking at
+the raw generations, the small model often drifted off task under steering. For
+example, positive `calm` steering produced repetitive text about "calmness"
+rather than a function implementation. Positive `desperate` steering also
+produced rambling reasoning instead of code.
 
 So the right interpretation is:
 
-> In this tiny model, steering visibly changes generation behavior, but the
-> result is too incoherent to interpret as a coding-agent reliability effect.
+> In this tiny model and seed-controlled smoke run, steering is associated with
+> different generation behavior, but the result is too incoherent to interpret
+> as a coding-agent reliability effect.
 
 ## What This Suggests
 
@@ -122,7 +126,7 @@ First, the instrumentation works. The repo can extract directions, probe a
 failure trajectory, steer generation, score outputs, and save plots with a
 manifest.
 
-Second, small coding models may have pressure-sensitive directions, but the
+Second, this 0.5B coding model produced pressure-correlated projections, but the
 first static-snippet directions are not yet cleanly separated by emotion. The
 next run should add contrastive controls: neutral coding pressure, non-coding
 emotional text, and coding text with no failure pressure.
