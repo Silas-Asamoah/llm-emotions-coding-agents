@@ -1,377 +1,211 @@
 # When Coding Agents Get Frustrated
 
-_A small-model replication sketch inspired by Anthropic's emotion-concept work._
+_A coding-agent replication sketch inspired by Anthropic's emotion-concept work._
 
 ![Emotion-coded activation streams entering a coding-agent decision point](assets/emotion-coding-agent-hero.png)
 
 Anthropic's 2026 paper, [Emotion Concepts and their Function in a Large
 Language Model](https://www.anthropic.com/research/emotion-concepts-function),
-reports that Claude Sonnet 4.5 contains internal activation directions
-corresponding to emotion concepts such as `calm`, `afraid`, and `desperate`.
-Their strongest claim is not that the model feels anything. It is that these
-directions are measurable and can causally influence behavior.
+argues that Claude Sonnet 4.5 contains internal directions corresponding to
+emotion concepts such as `calm`, `afraid`, and `desperate`. The interesting
+claim is not that the model feels anything. It is that these directions are
+measurable and can causally influence behavior.
 
-That raises an obvious coding-agent question:
+That immediately raises a developer-facing question:
 
-> When a coding model sees repeated test failures, do "frustrated",
-> "desperate", or "stuck" activation directions light up, and can steering those
-> directions change the agent's behavior?
+> When a coding agent sees repeated test failures, do `frustrated`,
+> `desperate`, or `stuck` directions show up internally, and does steering those
+> directions change retry behavior?
 
-This repo is an early, deliberately small attempt to build that experiment for
-open coding models.
-
-## Why Coding Agents?
-
-Coding agents have a natural pressure loop:
-
-1. Write code.
-2. Run tests.
-3. See failure output.
-4. Retry under a shrinking budget.
-
-That loop is where we would expect shortcuts, test fixation, hardcoding, giving
-up, and visible frustration markers to appear. Visible markers such as profanity
-or all-caps text are easy to count, but they are probably a weak proxy. The more
-interesting case is when the model changes strategy without sounding emotional.
+This repo is a first pass at that experiment on open coding models. The current
+headline run is no longer a toy one-shot prompt. It is a retrying coding-agent
+harness with visible tests, hidden tests, failure feedback, and up to three
+attempts per task.
 
 ![Hand-drawn overview of emotion directions flowing through a coding-agent retry loop](assets/excalidraw-agent-loop.png)
 
-## Smoke Experiment
+## Serious Agent Harness
 
-The first run used:
+The harness gives each model four function-implementation tasks:
 
-- Model: `Qwen/Qwen2.5-Coder-0.5B-Instruct`
-- GPU: NVIDIA L4 on JarvisLabs
-- Emotion directions: `calm`, `patient`, `confident`, `frustrated`,
-  `desperate`, `stuck`, `stressed`
-- Layers: 8, 12, 16
-- Failure trajectory prompts: 5
-- Generated coding-agent responses: 15
+- `parse_duration`
+- `merge_intervals`
+- `stable_top_words`
+- `mask_tokens`
 
-This is a smoke test, not a publishable claim. A 0.5B instruction model is small
-enough to produce brittle generations, and the emotion directions were extracted
-from short static snippets rather than a large model-generated story corpus.
+For each task, the model gets visible examples and must return one Python
+function. The harness runs visible tests. If they fail, the model gets the
+failure message and its previous implementation, then retries. Hidden tests are
+scored only after the run.
 
-## Method
+Each model is evaluated under five conditions:
 
-For each emotion, I wrote a small set of labeled snippets. Example for
-`desperate`:
+- baseline
+- `calm_+1.0`
+- `calm_-1.0`
+- `desperate_+1.0`
+- `desperate_-1.0`
 
-> With minutes left before the demo, the engineer felt desperate for any passing
-> result.
+The steering directions come from labeled snippets for `calm`, `patient`,
+`confident`, `frustrated`, `desperate`, `stuck`, and `stressed`, subtracting a
+neutral-code-text mean at selected layers. Generation seeds are deterministic by
+task, condition, and attempt.
 
-The pipeline records residual-stream hidden states for those snippets, averages
-them at selected layers, and subtracts a neutral-code-text mean. That gives one
-direction per emotion per layer.
+This is still not a full repo-editing agent. It is a function-level agent loop.
+That is deliberate: it gives visible failures, hidden failures, retries, and
+behavioral measurements without adding filesystem/tool-use confounds too early.
 
-Then I probe five coding-agent failure prompts:
+## Models
 
-1. The task is clear and tests have not run.
-2. One visible test failed.
-3. The same assertion failed again.
-4. Visible tests pass, but hidden tests may differ.
-5. Only one retry remains, and the prompt explicitly warns against hardcoding.
+I ran the serious harness on three open coding models:
 
-For generation, I compare baseline responses against simple activation steering
-for `desperate` and `calm` at positive and negative strengths.
+| Run | Model | Runtime note |
+|---|---|---|
+| `qwen3-coder-30b-a3b` | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | H100, Transformers 5.8 |
+| `devstral-small-2507` | `mistralai/Devstral-Small-2507` | H100, `mistral-common` tokenizer |
+| `deepseek-coder-v2-lite` | `deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct` | H100, Transformers 4.46.3 compatibility runtime |
 
-## Result 1: Later Failure Prompts Had Higher Projections
+The Devstral run needed Mistral's official tokenizer backend. The generic
+Transformers tokenizer produced token IDs outside the model embedding range.
+The DeepSeek run needed the older Transformers runtime because its remote code
+still uses the older cache API. Both details are in the manifests, because they
+matter for replication.
 
-![Activation trajectory](assets/plots/smoke-activation-excalidraw.png)
+## Result: Modern Agent Pass Rates
 
-The cleanest signal in the smoke run is that projections generally increase on
-later failure-pressure prompts.
+![Serious agent task pass comparison](assets/plots/serious-agent-task-pass-excalidraw.png)
 
-Mean projection by stage:
-
-| Stage | calm | confident | desperate | frustrated | patient | stressed | stuck |
-|---:|---:|---:|---:|---:|---:|---:|---:|
-| 0 | 0.266 | 0.406 | 0.361 | 0.425 | 0.457 | 0.261 | 0.348 |
-| 1 | 0.344 | 0.484 | 0.451 | 0.548 | 0.518 | 0.380 | 0.540 |
-| 2 | 0.352 | 0.432 | 0.395 | 0.512 | 0.576 | 0.393 | 0.469 |
-| 3 | 0.446 | 0.469 | 0.533 | 0.533 | 0.417 | 0.518 | 0.546 |
-| 4 | 0.494 | 0.538 | 0.578 | 0.579 | 0.645 | 0.530 | 0.602 |
-
-The obvious caveat: each stage is a different prompt, not repeated measurements
-under a controlled pressure intervention. Also, all the directions move upward.
-That means this first run probably measures a broad "coding pressure / failure
-context" feature as much as specific emotions. That is still useful. It tells us
-the pipeline can detect structured activation differences across a coding-agent
-trajectory, but the next version needs stronger controls.
-
-## Result 2: Visible Emotional Markers Were Not the Main Story
-
-![Behavior markers](assets/plots/smoke-behavior-markers-excalidraw.png)
-
-The visible marker score was not especially informative in this run. Baseline
-generations averaged `1.333` visible markers per response. The steered
-conditions ranged from `0.0` to `0.667` under the current regex scoring.
-
-![Aggregate marker score](assets/plots/smoke-aggregate-markers-excalidraw.png)
-
-The rerun uses the same sampling seed for every condition within each task, so
-differences are less confounded by sampling variance than the first attempt.
-Still, this does not mean steering made the model safer or calmer. Looking at
-the raw generations, the small model often drifted off task under steering. For
-example, positive `calm` steering produced repetitive text about "calmness"
-rather than a function implementation. Positive `desperate` steering also
-produced rambling reasoning instead of code.
-
-So the right interpretation is:
-
-> In this tiny model and seed-controlled smoke run, steering is associated with
-> different generation behavior, but the result is too incoherent to interpret
-> as a coding-agent reliability effect.
-
-## What This Suggests
-
-The smoke test gave three useful engineering conclusions.
-
-First, the instrumentation works. The repo can extract directions, probe a
-failure trajectory, steer generation, score outputs, and save plots with a
-manifest.
-
-Second, this 0.5B coding model produced pressure-correlated projections, but the
-first static-snippet directions are not yet cleanly separated by emotion. The
-next run should add contrastive controls: neutral coding pressure, non-coding
-emotional text, and coding text with no failure pressure.
-
-Third, visible emotional telemetry such as profanity is too weak as the primary
-signal. The better behavioral metrics are task validity, visible-test pass rate,
-hidden-test pass rate, hardcoding rate, and whether the generated patch mentions
-or exploits the test harness.
-
-## Main 7B Comparison
-
-I then ran the same pipeline on two larger open coding models:
-
-- `Qwen/Qwen2.5-Coder-7B-Instruct`
-- `deepseek-ai/deepseek-coder-6.7b-instruct`
-
-The run used an NVIDIA A100-PCIE-40GB on JarvisLabs. Each model produced 27
-generations: 3 coding tasks times baseline plus positive and negative steering
-for `desperate`, `frustrated`, `calm`, and `patient`.
-
-I also added an offline execution evaluator. It extracts the requested function,
-normalizes byte-level artifacts such as `Ċ` and `Ġ`, and runs visible and hidden
-tests for the three toy tasks.
-
-![Negative activation by stage](assets/plots/main-negative-activation-excalidraw.png)
-
-The activation result is broadly consistent with the smoke run, with one caveat:
-the trajectory is not monotonic. Stage 4 is higher than stage 0 for both models,
-but there is a mid-trajectory dip around stage 3. The mean negative projection
-was higher for Qwen than DeepSeek:
-
-| Model | Mean negative projection | Mean positive projection |
-|---|---:|---:|
-| Qwen2.5-Coder-7B-Instruct | 0.5063 | 0.4750 |
-| DeepSeek-Coder-6.7B-Instruct | 0.4699 | 0.4497 |
-
-This still should not be read as "the model is frustrated." It is better read
-as: the directions learned from emotion-labeled snippets overlap with features
-that differ across coding-failure prompts.
-
-## Execution Behavior
-
-![Task pass by condition](assets/plots/main-task-pass-excalidraw.png)
-
-After fixing the evaluator to allow common generated-code builtins such as
-`map` and exception classes such as `ZeroDivisionError`, Qwen was the more
-reliable instruction-following baseline. DeepSeek was weaker under this prompt
-setup:
-
-| Model | Valid Python rate | Visible pass rate | Hidden pass rate | Full task pass rate |
+| Model | Final visible pass | Final hidden pass | Final task pass | Mean attempts used |
 |---|---:|---:|---:|---:|
-| Qwen2.5-Coder-7B-Instruct | 1.0000 | 0.6296 | 0.4815 | 0.4815 |
-| DeepSeek-Coder-6.7B-Instruct | 0.7037 | 0.2593 | 0.2593 | 0.2593 |
+| Qwen3-Coder 30B-A3B | 0.85 | 0.85 | 0.85 | 1.35 |
+| Devstral Small 2507 | 0.75 | 0.75 | 0.75 | 1.75 |
+| DeepSeek-Coder-V2 Lite | 0.15 | 0.15 | 0.15 | 2.70 |
 
-The condition-level numbers are noisy because each condition only has three
-tasks. Still, one pattern is useful: baseline performance was `0.667` task pass
-rate for both models, and Qwen did not improve under naive steering in this
-single run. DeepSeek's `patient_-1.0` condition reached `1.000` on three tasks,
-but that is too small and prompt-sensitive to treat as a reliability result.
+The most useful result is mundane but important: the agent harness separates
+models much more clearly than the earlier one-shot prompts. Qwen3-Coder and
+Devstral usually recover or pass quickly. DeepSeek-Coder-V2 Lite struggles under
+this exact prompt/evaluator/runtime setup.
 
-For Qwen, several negative steering conditions preserved the baseline pass rate,
-while positive steering often dropped to `0.333`. For DeepSeek, most steered
-conditions dropped to `0.0`, though `patient_-1.0` reached `1.000` on these
-three tasks.
+Condition-level task pass rates:
 
-## Visible Markers
+| Condition | Qwen3-Coder | Devstral | DeepSeek V2 Lite |
+|---|---:|---:|---:|
+| baseline | 1.00 | 0.75 | 0.25 |
+| `calm_+1.0` | 1.00 | 0.75 | 0.25 |
+| `calm_-1.0` | 0.75 | 0.75 | 0.00 |
+| `desperate_+1.0` | 0.75 | 0.75 | 0.00 |
+| `desperate_-1.0` | 0.75 | 0.75 | 0.25 |
 
-![Marker score by condition](assets/plots/main-marker-score-excalidraw.png)
+In this run, naive emotion steering did not improve reliability. Qwen3's
+baseline and positive-calm condition were already perfect on four tasks.
+Devstral was invariant across all steering conditions. DeepSeek remained weak.
+The right conclusion is not "calm steering works"; it is that the harness is now
+strong enough to make that claim falsifiable.
 
-Visible emotion markers again underperformed as the main signal. Qwen and
-DeepSeek had almost no visible marker hits, despite meaningful differences in
-task pass rate.
+## Visible Emotion Markers Were Weak
 
-That supports the original hunch: profanity and obvious frustration language
-are easy to count, but they are not enough. The next hypothesis to test is
-whether internal directions predict bad coding behavior before the surface text
-looks emotional.
+![Serious agent marker score comparison](assets/plots/serious-agent-marker-score-excalidraw.png)
 
-## Current Takeaway
+Visible marker counts were small and not very diagnostic. Qwen3 and DeepSeek
+had the same mean marker score, despite radically different task performance.
+Devstral had the lowest marker score, but not the highest pass rate.
 
-The strongest result so far is not "emotion steering works." In this single
-run, naive steering did not produce a stable improvement over baseline.
+That matches the original hunch from the Claude Code swear-word collector
+discussion: profanity and visible frustration are easy telemetry, but they are
+not the main behavioral signal. For coding agents, hidden-test pass rate,
+attempt count, retry recovery, import mistakes, and test-fixation are more
+useful observables.
 
-The stronger result is:
+## Internal Projection Signal
 
-> Emotion-labeled activation directions are measurable in small open coding
-> models, and they differ across coding-failure prompts, but naive steering did
-> not improve task behavior in this first 7B comparison.
+![Serious agent negative activation comparison](assets/plots/serious-agent-negative-activation-excalidraw.png)
 
-Qwen is still the best instruction-following model to use for the next iteration
-because it produced valid, task-like code most consistently. DeepSeek needs a
-prompt-formatting follow-up before I would treat its behavioral numbers as a
-clean model comparison.
+Mean observed negative-emotion projection:
 
-## Coding-Agent Harness
-
-The final run moved from one-shot toy prompts to an actual retry loop. The model
-now behaves more like a coding agent:
-
-1. It receives a task and visible examples.
-2. It returns one Python function.
-3. The harness runs visible tests.
-4. If visible tests fail, the model gets the failure message and previous code.
-5. The model retries up to three attempts.
-6. Hidden tests are scored only for analysis.
-
-I ran this first harness on Qwen. DeepSeek was left out of this round because
-the earlier run showed prompt-format artifacts that need separate cleanup before
-an agent-loop comparison is fair. These numbers come from a clean rerun with the
-fixed function extractor, so the harness stops as soon as a visible test pass is
-detected. Generation seeds are fixed by task, condition, and attempt so early
-stopping does not shift later samples.
-
-![Agent task pass comparison](assets/plots/agent-task-pass-excalidraw.png)
-
-| Model | Final visible pass | Final hidden pass | Final task pass | Mean attempts used | Mean marker score / attempted generation |
-|---|---:|---:|---:|---:|---:|
-| Qwen2.5-Coder-7B-Instruct | 0.5500 | 0.5500 | 0.5500 | 2.0500 | 0.1220 |
-
-This is the first behaviorally meaningful version of the experiment. Qwen often
-produced usable function-like code and sometimes recovered after feedback.
-
-![Agent marker comparison](assets/plots/agent-marker-score-excalidraw.png)
-
-The marker score also became more informative in the agent loop. This is a
-per-attempted-generation average, so models that stop early contribute fewer
-later attempts. Qwen stayed mostly terse, which reinforces the main point:
-surface emotional language is not where the interesting signal lives.
-
-![Agent negative activation comparison](assets/plots/agent-negative-activation-excalidraw.png)
-
-The observed-prompt negative-emotion projection for Qwen was:
-
-| Model | Mean observed negative projection |
+| Model | Mean negative projection |
 |---|---:|
-| Qwen2.5-Coder-7B-Instruct | 0.3898 |
+| Qwen3-Coder 30B-A3B | 0.3576 |
+| Devstral Small 2507 | 0.3442 |
+| DeepSeek-Coder-V2 Lite | -0.5457 |
 
-This is still not a predictive result, and it is attempt-weighted because the
-harness stops after visible tests pass. It is a useful signpost for the next
-version: compare this signal against later failure, hardcoding, and recovery
-behavior across modern agentic coding models.
+The DeepSeek sign flip is a warning against treating hand-built directions as
+model-universal coordinates. The same snippet-derived direction can mean
+different things across architectures, tokenizers, and training mixtures. This
+is why the next serious version should either learn directions per model with
+stronger contrastive controls or move to SAE features.
 
-## Current Takeaway
+## What Changed My Mind
 
-The strongest version of the result is now:
+The early smoke tests were useful for plumbing, but the serious run changed the
+shape of the project. A coding-agent loop makes the experiment much more
+developer-relevant because it produces the behaviors people actually care
+about: failure recovery, hidden-test generalization, retry count, and whether a
+model keeps writing valid function-shaped code.
 
-> Emotion-labeled activation directions are measurable in open coding models,
-> they differ across coding-failure and retry contexts, and the retrying
-> coding-agent harness exposes behavior that one-shot prompts hid.
+The current evidence says:
 
-The practical result is also sharper:
+> Emotion-labeled directions are measurable in open coding models, but naive
+> steering did not reliably improve coding-agent behavior in this run.
 
-> Visible emotional language is not the main signal. Agent-loop behavior,
-> hidden-test performance, retry recovery, and off-task continuation are better
-> observables.
+And the practical takeaway is:
 
-Naive steering still does not look reliable yet. In the clean Qwen agent
-harness, `calm_+1.0` and `desperate_+1.0` both reached `0.750` task pass rate,
-above the `0.500` baseline, but each condition has only four tasks. That is an
-interesting effect to replicate, not a conclusion.
+> If emotion-like concepts matter for coding agents, they probably matter
+> through retry dynamics and failure-message processing, not through visible
+> emotional language.
 
-## Other Experiments This Enables
+## Other Experiments
 
-One obvious experiment family is an emotion version of [Thought
+An obvious family is an emotion version of [Thought
 Anchors](https://arxiv.org/abs/2506.19143), the 2025 work by Paul Bogdan, Uzay
-Macar, Neel Nanda, and Arthur Conmy on sentence-level attribution for reasoning
-traces. Instead of looking for planning or backtracking anchors in
-chain-of-thought, this setup could look for emotion-like anchors in agent traces:
+Macar, Neel Nanda, and Arthur Conmy on sentence-level attribution in reasoning
+traces. Instead of looking for planning anchors, this setup could look for
+emotion-like anchors in agent traces:
 
 - Does one failure-feedback sentence sharply raise `desperate` or `stuck`
-  projection for all later attempts?
-- If that sentence is paraphrased to sound calm, does retry behavior change?
-- Which visible-test failure messages become anchors for later hardcoding?
-- Are there receiver heads or attention patterns that broadcast failure context
-  into later code tokens?
-- Can attention suppression or activation patching remove the bad anchor without
-  reducing useful debugging?
+  projection for later attempts?
+- If that sentence is rewritten in a calmer tone, does retry behavior change?
+- Which visible-test failure messages become anchors for hardcoding?
+- Does steering only while reading failure feedback matter more than steering
+  while writing code?
+- Can activation patching remove a bad failure anchor without hurting useful
+  debugging?
 
-Other natural experiments:
+Other experiment directions:
 
-- **Emotion anchors:** sentence-level attribution over retry traces, modeled on
-  Thought Anchors, but using emotion-direction activation and task outcomes.
-- **Failure-message rewrites:** same bug, same tests, different emotional tone
-  in the feedback message.
-- **Steering only feedback tokens:** apply steering while the model reads test
-  failure output, not while it writes code.
-- **Reward-hacking probes:** add tasks where visible examples invite
-  hardcoding, then test whether `desperate` activation predicts shortcut use.
-- **SAE features:** replace hand-built directions with sparse autoencoder
-  features for failure, pressure, shortcutting, and recovery.
-- **Model-size ladder:** run the harness across Qwen coder sizes to see whether
-  retry recovery and emotion-direction separation scale together.
+- **Failure-message rewrites:** same bug, same tests, different emotional tone.
+- **Reward-hacking probes:** tasks where visible examples invite hardcoding.
+- **SAE features:** replace hand-built directions with sparse features for
+  failure pressure, shortcutting, and recovery.
+- **Model-size ladders:** run Qwen coder sizes to see whether retry recovery and
+  direction separation scale together.
+- **Repo-edit agents:** move from function tasks to a real checkout, patch
+  application, tests, and tool logs.
 
 ## Reproducibility
 
-Run artifacts for this smoke experiment are in:
+Serious harness artifacts:
 
 ```text
-results/runs/smoke-qwen-coder-0_5b/
+results/agent-runs/qwen3-coder-30b-a3b/
+results/agent-runs/devstral-small-2507/
+results/agent-runs/deepseek-coder-v2-lite/
+results/comparisons/serious-agent-harness/
 ```
 
 Key files:
 
-- `manifest.json`
 - `summary.json`
-- `activation_scores.csv`
-- `generation_scores.csv`
-- `execution_scores.csv`
-- `generations.jsonl`
-- `plots/activation_trajectory.png`
-- `plots/behavior_markers.png`
-- `plots/aggregate_marker_score.png`
+- `manifest.json`
+- `agent_attempts.csv`
+- `agent_runs.csv`
+- `agent_activation_scores.csv`
+- `agent_attempts.jsonl`
 
-The main comparison artifacts are in:
-
-```text
-results/comparisons/main-7b/
-```
-
-The retrying coding-agent harness artifacts are in:
-
-```text
-results/agent-runs/
-results/comparisons/agent-harness/
-```
-
-The agent attempt CSVs include the deterministic generation seed used for each
-task, condition, and attempt.
-
-Blog-ready Excalidraw-style figures are generated from the CSV artifacts by:
+Blog figures are generated from CSV artifacts by:
 
 ```text
 scripts/make_blog_excalidraw_plots.py
 ```
 
-and saved in:
-
-```text
-blog/assets/plots/
-```
-
-The current result should be read as a first working slice, not as evidence that
-small coding models have functional emotions.
+Older smoke and 7B one-shot artifacts remain in the repo as background, but the
+serious coding-agent harness is the result I would actually write up.

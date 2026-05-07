@@ -22,15 +22,22 @@ NEGATIVE_EMOTIONS = ["frustrated", "desperate", "stuck", "stressed"]
 SMOKE_RUN = ROOT / "results" / "runs" / "smoke-qwen-coder-0_5b"
 MAIN_COMPARISON = ROOT / "results" / "comparisons" / "main-7b"
 AGENT_COMPARISON = ROOT / "results" / "comparisons" / "agent-harness"
+SERIOUS_AGENT_COMPARISON = ROOT / "results" / "comparisons" / "serious-agent-harness"
 
 MODEL_LABELS = {
     "main-qwen-coder-7b": "Qwen 7B",
     "main-deepseek-coder-6_7b": "DeepSeek 6.7B",
     "qwen-coder-7b": "Qwen 7B",
+    "qwen3-coder-30b-a3b": "Qwen3 30B-A3B",
+    "devstral-small-2507": "Devstral 2507",
+    "deepseek-coder-v2-lite": "DeepSeek V2 Lite",
 }
 MODEL_COLORS = {
     "Qwen 7B": "#228be6",
     "DeepSeek 6.7B": "#f08c00",
+    "Qwen3 30B-A3B": "#228be6",
+    "Devstral 2507": "#2f9e44",
+    "DeepSeek V2 Lite": "#f08c00",
 }
 CONDITION_ORDER = [
     "baseline",
@@ -64,6 +71,9 @@ def main() -> None:
         _plot_agent_task_pass()
         _plot_agent_markers()
         _plot_agent_negative_activation()
+        _plot_serious_agent_task_pass()
+        _plot_serious_agent_markers()
+        _plot_serious_agent_negative_activation()
 
 
 def _plot_smoke_activation() -> None:
@@ -264,6 +274,72 @@ def _plot_agent_negative_activation() -> None:
     _save(fig, "agent-negative-activation-excalidraw.png")
 
 
+def _plot_serious_agent_task_pass() -> None:
+    by_condition = pd.read_csv(SERIOUS_AGENT_COMPARISON / "agent_by_condition.csv")
+    by_condition["label"] = _labels_for_runs(by_condition["run"])
+    conditions = _ordered_conditions(by_condition["condition"].unique(), AGENT_CONDITION_ORDER)
+    labels = _ordered_model_labels(by_condition["label"].unique())
+    pivot = by_condition.pivot(
+        index="condition",
+        columns="label",
+        values="final_task_pass",
+    ).reindex(index=conditions, columns=labels)
+
+    fig, ax = _figure("Modern agent harness: final task pass", figsize=(13, 6))
+    _grouped_bars(ax, pivot, labels, annotate=True)
+    _style_axes(ax, "Condition", "Final task pass rate")
+    ax.set_ylim(0, 1.08)
+    ax.set_xticks(np.arange(len(pivot)), [_condition_label(value) for value in pivot.index])
+    ax.tick_params(axis="x", rotation=16)
+    ax.legend(frameon=False, ncol=3)
+    _save(fig, "serious-agent-task-pass-excalidraw.png")
+
+
+def _plot_serious_agent_markers() -> None:
+    markers = pd.read_csv(SERIOUS_AGENT_COMPARISON / "agent_markers_by_condition.csv")
+    markers["label"] = _labels_for_runs(markers["run"])
+    conditions = _ordered_conditions(markers["condition"].unique(), AGENT_CONDITION_ORDER)
+    labels = _ordered_model_labels(markers["label"].unique())
+    pivot = markers.pivot(
+        index="condition",
+        columns="label",
+        values="aggregate_marker_score",
+    ).reindex(index=conditions, columns=labels)
+
+    fig, ax = _figure("Modern agent harness: visible marker score", figsize=(13, 6))
+    _grouped_bars(ax, pivot, labels, annotate=True, value_format="{:.1f}")
+    _style_axes(ax, "Condition", "Mean markers per attempted generation")
+    ax.set_xticks(np.arange(len(pivot)), [_condition_label(value) for value in pivot.index])
+    ax.tick_params(axis="x", rotation=16)
+    ax.legend(frameon=False, ncol=3)
+    _save(fig, "serious-agent-marker-score-excalidraw.png")
+
+
+def _plot_serious_agent_negative_activation() -> None:
+    negative = pd.read_csv(SERIOUS_AGENT_COMPARISON / "agent_negative_by_attempt.csv")
+    negative["label"] = _labels_for_runs(negative["run"])
+    pivot = (
+        negative.groupby(["attempt", "label"], as_index=False)["score"]
+        .mean()
+        .pivot(index="attempt", columns="label", values="score")
+    )
+
+    fig, ax = _figure("Modern agent harness: observed negative-emotion projection")
+    for label in _ordered_model_labels(pivot.columns):
+        ax.plot(
+            pivot.index,
+            pivot[label],
+            marker="o",
+            linewidth=2.8,
+            color=MODEL_COLORS[label],
+            label=label,
+        )
+    _style_axes(ax, "Attempt", "Mean cosine projection")
+    ax.set_xticks(pivot.index)
+    ax.legend(frameon=False, ncol=3)
+    _save(fig, "serious-agent-negative-activation-excalidraw.png")
+
+
 def _figure(title: str, figsize: tuple[float, float] = (10, 5.6)):
     fig, ax = plt.subplots(figsize=figsize)
     fig.patch.set_facecolor("#fffdf7")
@@ -348,9 +424,19 @@ def _ordered_conditions(values, order: list[str]) -> list[str]:
 
 
 def _ordered_model_labels(values) -> list[str]:
-    order = ["Qwen 7B", "DeepSeek 6.7B"]
+    order = [
+        "Qwen 7B",
+        "DeepSeek 6.7B",
+        "Qwen3 30B-A3B",
+        "Devstral 2507",
+        "DeepSeek V2 Lite",
+    ]
     value_set = set(values)
     return [value for value in order if value in value_set]
+
+
+def _labels_for_runs(runs: pd.Series) -> pd.Series:
+    return runs.map(MODEL_LABELS).fillna(runs)
 
 
 def _condition_label(value: str) -> str:
