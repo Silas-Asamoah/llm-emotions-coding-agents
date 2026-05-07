@@ -136,15 +136,108 @@ signal. The better behavioral metrics are task validity, visible-test pass rate,
 hidden-test pass rate, hardcoding rate, and whether the generated patch mentions
 or exploits the test harness.
 
+## Main 7B Comparison
+
+I then ran the same pipeline on three larger open coding models:
+
+- `Qwen/Qwen2.5-Coder-7B-Instruct`
+- `deepseek-ai/deepseek-coder-6.7b-instruct`
+- `bigcode/starcoder2-7b`
+
+The run used an NVIDIA A100-PCIE-40GB on JarvisLabs. Each model produced 27
+generations: 3 coding tasks times baseline plus positive and negative steering
+for `desperate`, `frustrated`, `calm`, and `patient`.
+
+I also added an offline execution evaluator. It extracts the requested function,
+normalizes byte-level artifacts such as `Ċ` and `Ġ`, and runs visible and hidden
+tests for the three toy tasks.
+
+![Negative activation by stage](../results/comparisons/main-7b/plots/negative_activation_by_stage.png)
+
+The activation result is broadly consistent with the smoke run, with one caveat:
+the trajectory is not monotonic. Stage 4 is higher than stage 0 for all three
+models, but there is a mid-trajectory dip around stage 3. The mean negative
+projection was highest for StarCoder2, then Qwen, then DeepSeek:
+
+| Model | Mean negative projection | Mean positive projection |
+|---|---:|---:|
+| StarCoder2-7B | 0.5165 | 0.4986 |
+| Qwen2.5-Coder-7B-Instruct | 0.5063 | 0.4750 |
+| DeepSeek-Coder-6.7B-Instruct | 0.4699 | 0.4497 |
+
+This still should not be read as "the model is frustrated." It is better read
+as: the directions learned from emotion-labeled snippets overlap with features
+that differ across coding-failure prompts.
+
+## Execution Behavior
+
+![Task pass by condition](../results/comparisons/main-7b/plots/task_pass_by_condition.png)
+
+After fixing the evaluator to allow common generated-code builtins such as
+`map` and exception classes such as `ZeroDivisionError`, StarCoder2 had the best
+full task pass rate, Qwen had the best valid-Python rate, and DeepSeek was the
+least reliable under this prompt setup:
+
+| Model | Valid Python rate | Visible pass rate | Hidden pass rate | Full task pass rate |
+|---|---:|---:|---:|---:|
+| StarCoder2-7B | 0.9630 | 0.6296 | 0.6296 | 0.6296 |
+| Qwen2.5-Coder-7B-Instruct | 1.0000 | 0.6296 | 0.4815 | 0.4815 |
+| DeepSeek-Coder-6.7B-Instruct | 0.7037 | 0.2593 | 0.2593 | 0.2593 |
+
+The condition-level numbers are noisy because each condition only has three
+tasks. Still, one pattern is useful: baseline performance was `0.667` task pass
+rate for all three models, and no steered condition beat baseline in this single
+run. That is a negative first observation for naive steering, not a stable
+reliability result.
+
+For Qwen, several negative steering conditions preserved the baseline pass rate,
+while positive steering often dropped to `0.333`. For DeepSeek, most steered
+conditions dropped to `0.0`, though `patient_-1.0` reached `1.000` on these
+three tasks. StarCoder2 mostly stayed at `0.667` except `calm_+1.0`, which
+dropped to `0.333`.
+
+## Visible Markers
+
+![Marker score by condition](../results/comparisons/main-7b/plots/marker_score_by_condition.png)
+
+Visible emotion markers again underperformed as the main signal. Qwen and
+DeepSeek had almost no visible marker hits, despite meaningful differences in
+task pass rate. StarCoder2 had the highest marker score, but that was mostly
+because the base model tended to continue with dataset-like code snippets and
+extra text rather than behaving like an instruction-following agent.
+
+That supports the original hunch: profanity and obvious frustration language
+are easy to count, but they are not enough. The next hypothesis to test is
+whether internal directions predict bad coding behavior before the surface text
+looks emotional.
+
+## Current Takeaway
+
+The strongest result so far is not "emotion steering works." In this single
+run, no steered condition beat baseline.
+
+The stronger result is:
+
+> Emotion-labeled activation directions are measurable in small open coding
+> models, and they differ across coding-failure prompts, but naive steering did
+> not improve task behavior in this first 7B comparison.
+
+Qwen is still the best instruction-following model to use for the next iteration
+because it produced valid, task-like code most consistently. StarCoder2 is
+useful as a strong base-model contrast and actually won the toy execution score
+after evaluator fixes. DeepSeek needs a prompt-formatting follow-up before I
+would treat its behavioral numbers as a clean model comparison.
+
 ## Next Run
 
-The next serious run should move to a larger coding model:
+The next serious run should move from toy function prompts to an actual
+coding-agent harness:
 
-- `Qwen/Qwen2.5-Coder-7B-Instruct` on Jarvis L4
-- More direction examples per emotion
+- `Qwen/Qwen2.5-Coder-7B-Instruct` as the primary model
+- StarCoder2 as a base-model contrast
+- Better prompt-format validation for DeepSeek
 - Multiple seeds
-- A real coding harness that executes generated functions against visible and
-  hidden tests
+- A real coding harness with visible and hidden tests
 - Baselines with no test-failure pressure
 - Steering only during failure-feedback tokens, not the whole generation
 
@@ -170,10 +263,17 @@ Key files:
 - `summary.json`
 - `activation_scores.csv`
 - `generation_scores.csv`
+- `execution_scores.csv`
 - `generations.jsonl`
 - `plots/activation_trajectory.png`
 - `plots/behavior_markers.png`
 - `plots/aggregate_marker_score.png`
+
+The main comparison artifacts are in:
+
+```text
+results/comparisons/main-7b/
+```
 
 The current result should be read as a first working slice, not as evidence that
 small coding models have functional emotions.
