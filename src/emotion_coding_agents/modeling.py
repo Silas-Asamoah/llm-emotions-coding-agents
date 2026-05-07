@@ -30,6 +30,7 @@ def load_model_and_tokenizer(model_config: dict):
 
     name = model_config["name"]
     revision = model_config.get("revision")
+    device_name = model_config.get("device", "auto")
     dtype_name = model_config.get("dtype", "auto")
     dtype = _torch_dtype(dtype_name, torch)
     tokenizer_kwargs = {"trust_remote_code": True}
@@ -42,7 +43,7 @@ def load_model_and_tokenizer(model_config: dict):
     kwargs = {"trust_remote_code": True}
     if revision:
         kwargs["revision"] = revision
-    if torch.cuda.is_available():
+    if torch.cuda.is_available() and device_name == "auto":
         kwargs["device_map"] = "auto"
         if dtype is not None:
             kwargs["torch_dtype"] = dtype
@@ -51,7 +52,9 @@ def load_model_and_tokenizer(model_config: dict):
             kwargs["torch_dtype"] = dtype
 
     model = AutoModelForCausalLM.from_pretrained(name, **kwargs)
-    if not torch.cuda.is_available():
+    if torch.cuda.is_available() and device_name == "cuda":
+        model.to("cuda")
+    elif not torch.cuda.is_available():
         device = "mps" if torch.backends.mps.is_available() else "cpu"
         model.to(device)
     model.eval()

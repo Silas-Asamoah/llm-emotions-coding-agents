@@ -1,6 +1,7 @@
 model:
   name: Qwen/Qwen2.5-Coder-7B-Instruct
   dtype: bfloat16
+  device: cuda
   max_new_tokens: 220
   temperature: 0.2
   top_p: 0.9

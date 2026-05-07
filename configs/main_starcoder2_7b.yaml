@@ -1,6 +1,7 @@
 model:
   name: bigcode/starcoder2-7b
   dtype: bfloat16
+  device: cuda
   max_new_tokens: 220
   temperature: 0.2
   top_p: 0.9
