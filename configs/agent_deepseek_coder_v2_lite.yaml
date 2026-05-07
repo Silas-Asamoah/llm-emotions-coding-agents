@@ -1,7 +1,7 @@
 model:
   name: deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct
   dtype: bfloat16
-  device: cuda
+  device: auto
   max_new_tokens: 360
   temperature: 0.2
   top_p: 0.9
