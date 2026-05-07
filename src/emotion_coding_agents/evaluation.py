@@ -127,8 +127,8 @@ def _run_tests(
     function_name: str,
     tests: list[tuple[tuple[Any, ...], Any]],
 ) -> dict[str, Any]:
-    queue: mp.Queue = mp.Queue()
-    process = mp.Process(target=_worker, args=(source, function_name, tests, queue))
+    result_queue: mp.Queue = mp.Queue()
+    process = mp.Process(target=_worker, args=(source, function_name, tests, result_queue))
     process.start()
     process.join(2)
     if process.is_alive():
@@ -136,7 +136,7 @@ def _run_tests(
         process.join()
         return {"passed": False, "error": "timeout"}
     try:
-        return queue.get(timeout=1)
+        return result_queue.get(timeout=1)
     except queue.Empty:
         return {"passed": False, "error": "no_result"}
 
