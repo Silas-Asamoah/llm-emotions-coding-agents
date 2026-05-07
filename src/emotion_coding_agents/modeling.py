@@ -172,7 +172,7 @@ def _install_transformers_remote_code_compat() -> None:
     if not hasattr(DynamicCache, "get_usable_length"):
         DynamicCache.get_usable_length = lambda self, _new_length=None: self.get_seq_length()
     if not hasattr(DynamicCache, "get_max_length"):
-        DynamicCache.get_max_length = lambda self: self.max_cache_len
+        DynamicCache.get_max_length = lambda self: None
     if not hasattr(DynamicCache, "seen_tokens"):
         DynamicCache.seen_tokens = property(lambda self: self.get_seq_length())
     if not hasattr(DynamicCache, "to_legacy_cache"):
