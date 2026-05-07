@@ -153,12 +153,30 @@ def _load_mistral_common_tokenizer(name: str, revision: str | None = None) -> Mi
 def _install_transformers_remote_code_compat() -> None:
     try:
         import torch
+        from transformers.cache_utils import DynamicCache
         from transformers.utils import import_utils
     except ImportError:
         return
 
     if not hasattr(import_utils, "is_torch_fx_available"):
         import_utils.is_torch_fx_available = lambda: hasattr(torch, "fx")
+    if not hasattr(DynamicCache, "from_legacy_cache"):
+
+        @classmethod
+        def from_legacy_cache(cls, past_key_values=None):
+            if past_key_values is None:
+                return cls()
+            return cls(ddp_cache_data=past_key_values)
+
+        DynamicCache.from_legacy_cache = from_legacy_cache
+    if not hasattr(DynamicCache, "get_usable_length"):
+        DynamicCache.get_usable_length = lambda self, _new_length=None: self.get_seq_length()
+    if not hasattr(DynamicCache, "get_max_length"):
+        DynamicCache.get_max_length = lambda self: self.max_cache_len
+    if not hasattr(DynamicCache, "to_legacy_cache"):
+        DynamicCache.to_legacy_cache = lambda self: tuple(
+            (layer.keys, layer.values) for layer in self.layers
+        )
 
 
 def _torch_dtype(dtype_name: str, torch_module):
@@ -229,7 +247,7 @@ def mean_activations(model, tokenizer, texts: list[str], layers: list[int]) -> n
             )
             _validate_token_ids(encoded, vocab_size)
             encoded = {key: value.to(device) for key, value in encoded.items()}
-            result = model(**encoded, output_hidden_states=True)
+            result = model(**encoded, output_hidden_states=True, use_cache=False)
             mask = encoded["attention_mask"].bool()[0]
             layer_vectors = []
             for layer in layers:
@@ -314,6 +332,7 @@ def generate_text(
         "do_sample": do_sample,
         "pad_token_id": tokenizer.pad_token_id,
         "eos_token_id": tokenizer.eos_token_id,
+        "use_cache": False,
     }
     if do_sample:
         generate_kwargs["temperature"] = temperature
