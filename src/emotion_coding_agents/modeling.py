@@ -173,6 +173,8 @@ def _install_transformers_remote_code_compat() -> None:
         DynamicCache.get_usable_length = lambda self, _new_length=None: self.get_seq_length()
     if not hasattr(DynamicCache, "get_max_length"):
         DynamicCache.get_max_length = lambda self: self.max_cache_len
+    if not hasattr(DynamicCache, "seen_tokens"):
+        DynamicCache.seen_tokens = property(lambda self: self.get_seq_length())
     if not hasattr(DynamicCache, "to_legacy_cache"):
         DynamicCache.to_legacy_cache = lambda self: tuple(
             (layer.keys, layer.values) for layer in self.layers
@@ -332,7 +334,6 @@ def generate_text(
         "do_sample": do_sample,
         "pad_token_id": tokenizer.pad_token_id,
         "eos_token_id": tokenizer.eos_token_id,
-        "use_cache": False,
     }
     if do_sample:
         generate_kwargs["temperature"] = temperature
