@@ -23,3 +23,17 @@ def test_evaluate_generation_marks_missing_function():
 
     assert not result["has_function"]
     assert not result["task_pass"]
+
+
+def test_evaluate_generation_allows_common_builtins_and_exceptions():
+    text = """
+def safe_divide(a, b):
+    try:
+        return a / b
+    except ZeroDivisionError:
+        return None
+"""
+
+    result = evaluate_generation(text, TASKS["last_retry"])
+
+    assert result["task_pass"]

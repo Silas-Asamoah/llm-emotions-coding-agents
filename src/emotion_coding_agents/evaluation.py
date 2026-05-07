@@ -3,6 +3,7 @@ from __future__ import annotations
 import ast
 import json
 import multiprocessing as mp
+import queue
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -134,9 +135,10 @@ def _run_tests(
         process.terminate()
         process.join()
         return {"passed": False, "error": "timeout"}
-    if queue.empty():
+    try:
+        return queue.get(timeout=1)
+    except queue.Empty:
         return {"passed": False, "error": "no_result"}
-    return queue.get()
 
 
 def _worker(
@@ -147,14 +149,28 @@ def _worker(
 ) -> None:
     safe_builtins = {
         "Exception": Exception,
+        "ZeroDivisionError": ZeroDivisionError,
+        "abs": abs,
+        "bool": bool,
+        "dict": dict,
+        "enumerate": enumerate,
+        "filter": filter,
         "float": float,
         "int": int,
         "isinstance": isinstance,
         "len": len,
         "list": list,
+        "map": map,
+        "max": max,
+        "min": min,
         "range": range,
+        "round": round,
+        "set": set,
+        "sorted": sorted,
         "str": str,
         "sum": sum,
+        "tuple": tuple,
+        "zip": zip,
     }
     namespace: dict[str, Any] = {"__builtins__": safe_builtins}
     try:
@@ -198,4 +214,3 @@ def _result(
         "error": error,
         "extracted_source": source,
     }
-

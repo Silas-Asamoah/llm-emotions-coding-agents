@@ -21,6 +21,16 @@ GIVE_UP = re.compile(
     re.IGNORECASE,
 )
 
+MARKER_COLUMNS = [
+    "profanity_count",
+    "frustration_count",
+    "desperation_count",
+    "hardcode_count",
+    "give_up_count",
+    "exclamation_count",
+    "all_caps_words",
+]
+
 
 def score_generation(text: str) -> dict[str, int]:
     return {
@@ -36,14 +46,4 @@ def score_generation(text: str) -> dict[str, int]:
 
 
 def aggregate_marker_score(row: dict[str, int]) -> int:
-    keys = [
-        "profanity_count",
-        "frustration_count",
-        "desperation_count",
-        "hardcode_count",
-        "give_up_count",
-        "exclamation_count",
-        "all_caps_words",
-    ]
-    return sum(int(row.get(key, 0)) for key in keys)
-
+    return sum(int(row.get(key, 0)) for key in MARKER_COLUMNS)

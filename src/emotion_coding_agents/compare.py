@@ -5,6 +5,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from emotion_coding_agents.metrics import MARKER_COLUMNS
+
 
 NEGATIVE_EMOTIONS = ["frustrated", "desperate", "stuck", "stressed"]
 POSITIVE_EMOTIONS = ["calm", "patient", "confident"]
@@ -71,16 +73,7 @@ def compare_runs(run_dirs: list[str | Path], output_dir: str | Path) -> dict:
     )
     markers_by_condition = (
         generation_all.groupby(["run", "model", "condition"], as_index=False)[
-            [
-                "aggregate_marker_score",
-                "profanity_count",
-                "frustration_count",
-                "desperation_count",
-                "hardcode_count",
-                "give_up_count",
-                "all_caps_words",
-                "exclamation_count",
-            ]
+            ["aggregate_marker_score", *MARKER_COLUMNS]
         ]
         .mean()
         .sort_values(["run", "condition"])
