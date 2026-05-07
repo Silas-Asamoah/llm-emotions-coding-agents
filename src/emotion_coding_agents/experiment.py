@@ -142,7 +142,15 @@ def _write_manifest(
         "python": sys.version,
         "platform": platform.platform(),
         "packages": _package_versions(
-            ["torch", "transformers", "accelerate", "numpy", "pandas", "matplotlib"]
+            [
+                "torch",
+                "transformers",
+                "accelerate",
+                "mistral-common",
+                "numpy",
+                "pandas",
+                "matplotlib",
+            ]
         ),
         "model_commit": getattr(getattr(model, "config", None), "_commit_hash", None),
         "tokenizer_commit": getattr(tokenizer, "_commit_hash", None),

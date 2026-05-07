@@ -35,7 +35,7 @@ def load_model_and_tokenizer(model_config: dict):
     tokenizer_backend = model_config.get("tokenizer_backend", "auto")
     dtype = _torch_dtype(dtype_name, torch)
     if tokenizer_backend == "mistral_common":
-        tokenizer = _load_mistral_common_tokenizer(name)
+        tokenizer = _load_mistral_common_tokenizer(name, revision=revision)
     else:
         tokenizer_kwargs = {"trust_remote_code": True}
         if revision:
@@ -55,6 +55,7 @@ def load_model_and_tokenizer(model_config: dict):
         if dtype is not None:
             kwargs["torch_dtype"] = dtype
 
+    _install_transformers_remote_code_compat()
     model = AutoModelForCausalLM.from_pretrained(name, **kwargs)
     if torch.cuda.is_available() and device_name == "cuda":
         model.to("cuda")
@@ -137,7 +138,7 @@ class MistralCommonTokenizerAdapter:
         return {"input_ids": input_ids, "attention_mask": attention_mask}
 
 
-def _load_mistral_common_tokenizer(name: str) -> MistralCommonTokenizerAdapter:
+def _load_mistral_common_tokenizer(name: str, revision: str | None = None) -> MistralCommonTokenizerAdapter:
     try:
         from mistral_common.tokens.tokenizers.mistral import MistralTokenizer
     except ImportError as exc:
@@ -146,7 +147,18 @@ def _load_mistral_common_tokenizer(name: str) -> MistralCommonTokenizerAdapter:
             "Install it with `pip install mistral-common>=1.7.0`."
         ) from exc
 
-    return MistralCommonTokenizerAdapter(MistralTokenizer.from_hf_hub(name))
+    return MistralCommonTokenizerAdapter(MistralTokenizer.from_hf_hub(name, revision=revision))
+
+
+def _install_transformers_remote_code_compat() -> None:
+    try:
+        import torch
+        from transformers.utils import import_utils
+    except ImportError:
+        return
+
+    if not hasattr(import_utils, "is_torch_fx_available"):
+        import_utils.is_torch_fx_available = lambda: hasattr(torch, "fx")
 
 
 def _torch_dtype(dtype_name: str, torch_module):
