@@ -1,0 +1,4 @@
+run,model,num_runs,final_visible_pass_rate,final_hidden_pass_rate,final_task_pass_rate,mean_attempts_used,mean_marker_score,mean_negative_activation
+qwen3-coder-30b-a3b,Qwen/Qwen3-Coder-30B-A3B-Instruct,20,0.85,0.85,0.85,1.35,0.25925925925925924,0.3576098413747034
+devstral-small-2507,mistralai/Devstral-Small-2507,20,0.75,0.75,0.75,1.75,0.14285714285714285,0.34419508782171065
+deepseek-coder-v2-lite,deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct,20,0.15,0.15,0.15,2.7,0.25925925925925924,-0.5457086342352407

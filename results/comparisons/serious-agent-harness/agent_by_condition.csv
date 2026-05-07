@@ -1,0 +1,16 @@
+run,model,condition,final_visible_pass,final_hidden_pass,final_task_pass,attempts_used
+deepseek-coder-v2-lite,deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct,baseline,0.25,0.25,0.25,2.5
+deepseek-coder-v2-lite,deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct,calm_+1.0,0.25,0.25,0.25,2.5
+deepseek-coder-v2-lite,deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct,calm_-1.0,0.0,0.0,0.0,3.0
+deepseek-coder-v2-lite,deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct,desperate_+1.0,0.0,0.0,0.0,3.0
+deepseek-coder-v2-lite,deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct,desperate_-1.0,0.25,0.25,0.25,2.5
+devstral-small-2507,mistralai/Devstral-Small-2507,baseline,0.75,0.75,0.75,1.75
+devstral-small-2507,mistralai/Devstral-Small-2507,calm_+1.0,0.75,0.75,0.75,1.75
+devstral-small-2507,mistralai/Devstral-Small-2507,calm_-1.0,0.75,0.75,0.75,1.75
+devstral-small-2507,mistralai/Devstral-Small-2507,desperate_+1.0,0.75,0.75,0.75,1.75
+devstral-small-2507,mistralai/Devstral-Small-2507,desperate_-1.0,0.75,0.75,0.75,1.75
+qwen3-coder-30b-a3b,Qwen/Qwen3-Coder-30B-A3B-Instruct,baseline,1.0,1.0,1.0,1.0
+qwen3-coder-30b-a3b,Qwen/Qwen3-Coder-30B-A3B-Instruct,calm_+1.0,1.0,1.0,1.0,1.0
+qwen3-coder-30b-a3b,Qwen/Qwen3-Coder-30B-A3B-Instruct,calm_-1.0,0.75,0.75,0.75,1.75
+qwen3-coder-30b-a3b,Qwen/Qwen3-Coder-30B-A3B-Instruct,desperate_+1.0,0.75,0.75,0.75,1.5
+qwen3-coder-30b-a3b,Qwen/Qwen3-Coder-30B-A3B-Instruct,desperate_-1.0,0.75,0.75,0.75,1.5

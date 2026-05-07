@@ -1,0 +1,23 @@
+{
+  "model": "mistralai/Devstral-Small-2507",
+  "num_tasks": 4,
+  "num_conditions": 5,
+  "num_runs": 20,
+  "max_attempts": 3,
+  "layers": [
+    13,
+    20,
+    26
+  ],
+  "plots": [
+    "plots/agent_pass_rates.png",
+    "plots/agent_attempts_used.png",
+    "plots/agent_negative_activation.png"
+  ],
+  "final_visible_pass_rate": 0.75,
+  "final_hidden_pass_rate": 0.75,
+  "final_task_pass_rate": 0.75,
+  "mean_attempts_used": 1.75,
+  "mean_marker_score": 0.1429,
+  "mean_negative_activation": 0.3442
+}

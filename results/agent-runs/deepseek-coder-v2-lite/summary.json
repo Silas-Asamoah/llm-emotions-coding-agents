@@ -1,0 +1,23 @@
+{
+  "model": "deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
+  "num_tasks": 4,
+  "num_conditions": 5,
+  "num_runs": 20,
+  "max_attempts": 3,
+  "layers": [
+    9,
+    13,
+    18
+  ],
+  "plots": [
+    "plots/agent_pass_rates.png",
+    "plots/agent_attempts_used.png",
+    "plots/agent_negative_activation.png"
+  ],
+  "final_visible_pass_rate": 0.15,
+  "final_hidden_pass_rate": 0.15,
+  "final_task_pass_rate": 0.15,
+  "mean_attempts_used": 2.7,
+  "mean_marker_score": 0.2593,
+  "mean_negative_activation": -0.5457
+}

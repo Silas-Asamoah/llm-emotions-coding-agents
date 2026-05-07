@@ -1,0 +1,16 @@
+run,model,condition,aggregate_marker_score
+deepseek-coder-v2-lite,deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct,baseline,0.1
+deepseek-coder-v2-lite,deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct,calm_+1.0,0.3
+deepseek-coder-v2-lite,deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct,calm_-1.0,0.25
+deepseek-coder-v2-lite,deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct,desperate_+1.0,0.5
+deepseek-coder-v2-lite,deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct,desperate_-1.0,0.1
+devstral-small-2507,mistralai/Devstral-Small-2507,baseline,0.14285714285714285
+devstral-small-2507,mistralai/Devstral-Small-2507,calm_+1.0,0.14285714285714285
+devstral-small-2507,mistralai/Devstral-Small-2507,calm_-1.0,0.14285714285714285
+devstral-small-2507,mistralai/Devstral-Small-2507,desperate_+1.0,0.14285714285714285
+devstral-small-2507,mistralai/Devstral-Small-2507,desperate_-1.0,0.14285714285714285
+qwen3-coder-30b-a3b,Qwen/Qwen3-Coder-30B-A3B-Instruct,baseline,0.25
+qwen3-coder-30b-a3b,Qwen/Qwen3-Coder-30B-A3B-Instruct,calm_+1.0,0.25
+qwen3-coder-30b-a3b,Qwen/Qwen3-Coder-30B-A3B-Instruct,calm_-1.0,0.2857142857142857
+qwen3-coder-30b-a3b,Qwen/Qwen3-Coder-30B-A3B-Instruct,desperate_+1.0,0.16666666666666666
+qwen3-coder-30b-a3b,Qwen/Qwen3-Coder-30B-A3B-Instruct,desperate_-1.0,0.3333333333333333

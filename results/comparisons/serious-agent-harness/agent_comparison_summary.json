@@ -1,0 +1,48 @@
+{
+  "runs": [
+    "results/agent-runs/qwen3-coder-30b-a3b",
+    "results/agent-runs/devstral-small-2507",
+    "results/agent-runs/deepseek-coder-v2-lite"
+  ],
+  "num_models": 3,
+  "summary": [
+    {
+      "run": "qwen3-coder-30b-a3b",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "num_runs": 20,
+      "final_visible_pass_rate": 0.85,
+      "final_hidden_pass_rate": 0.85,
+      "final_task_pass_rate": 0.85,
+      "mean_attempts_used": 1.35,
+      "mean_marker_score": 0.2593,
+      "mean_negative_activation": 0.3576
+    },
+    {
+      "run": "devstral-small-2507",
+      "model": "mistralai/Devstral-Small-2507",
+      "num_runs": 20,
+      "final_visible_pass_rate": 0.75,
+      "final_hidden_pass_rate": 0.75,
+      "final_task_pass_rate": 0.75,
+      "mean_attempts_used": 1.75,
+      "mean_marker_score": 0.1429,
+      "mean_negative_activation": 0.3442
+    },
+    {
+      "run": "deepseek-coder-v2-lite",
+      "model": "deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
+      "num_runs": 20,
+      "final_visible_pass_rate": 0.15,
+      "final_hidden_pass_rate": 0.15,
+      "final_task_pass_rate": 0.15,
+      "mean_attempts_used": 2.7,
+      "mean_marker_score": 0.2593,
+      "mean_negative_activation": -0.5457
+    }
+  ],
+  "plots": [
+    "plots/agent_task_pass_comparison.png",
+    "plots/agent_marker_comparison.png",
+    "plots/agent_negative_activation_comparison.png"
+  ]
+}
