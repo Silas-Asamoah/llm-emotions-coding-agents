@@ -71,9 +71,15 @@ For each emotion, I wrote a small set of labeled snippets. Example for
 > With minutes left before the demo, the engineer felt desperate for any passing
 > result.
 
-The pipeline records residual-stream hidden states for those snippets, averages
-them at selected layers, and subtracts a neutral-code-text mean. That gives one
-direction per emotion per layer.
+For each snippet, I record residual-stream hidden states, the intermediate
+vectors passed between transformer blocks, at a few layers. I average those
+states for each emotion and subtract the average for neutral code text. The
+result is one direction per emotion per layer.
+
+When I say a prompt has a higher projection onto an emotion direction, I mean
+its hidden state has a higher cosine similarity with that direction after the
+neutral-code mean is subtracted. This is a geometry measurement, not a claim
+that the model feels the emotion.
 
 Then I probe five coding-agent failure prompts:
 
@@ -90,7 +96,7 @@ for `desperate` and `calm` at positive and negative strengths.
 
 ![Activation trajectory](https://github.com/Silas-Asamoah/llm-emotions-coding-agents/blob/main/blog/assets/plots/smoke-activation-excalidraw.png?raw=true)
 
-The cleanest signal in the smoke run is that projections generally increase on
+The clearest signal in the smoke run is that projections generally increase on
 later failure-pressure prompts.
 
 Mean projection by stage:
@@ -113,19 +119,26 @@ across a coding-agent trajectory, which made a larger run worth doing.
 
 ![Behavior markers](https://github.com/Silas-Asamoah/llm-emotions-coding-agents/blob/main/blog/assets/plots/smoke-behavior-markers-excalidraw.png?raw=true)
 
-The visible marker score was not especially informative in this run. Baseline
-generations averaged `1.333` visible markers per response. The steered
-conditions ranged from `0.0` to `0.667` under the current regex scoring.
+Here, a visible marker means a surface cue in the generated text: profanity,
+frustration words such as `stuck` or `impossible`, desperation phrases such as
+`last chance`, hardcoding language such as `visible tests` or `shortcut`,
+exclamation marks, and all-caps words. I add those counts for each response, so
+averages can be fractional.
+
+On that scoring rule, baseline generations averaged `1.333` visible markers per
+response. The steered conditions ranged from `0.0` to `0.667`. The exact values
+matter less than the pattern: visible frustration language did not increase in a
+simple way when steering changed.
 
 ![Aggregate marker score](https://github.com/Silas-Asamoah/llm-emotions-coding-agents/blob/main/blog/assets/plots/smoke-aggregate-markers-excalidraw.png?raw=true)
 
-The rerun uses the same sampling seed for every condition within each task, so
-differences are less confounded by sampling variance than the first attempt.
-Still, this does not mean steering made the model safer or calmer. Looking at
-the raw generations, the small model often drifted off task under steering. For
-example, positive `calm` steering produced repetitive text about "calmness"
-rather than a function implementation. Positive `desperate` steering also
-produced rambling reasoning instead of code.
+I also tried to keep random variation from dominating the comparison. For each
+task, the baseline and steered generations used matched random seeds, so
+differences were less likely to come from the sampler taking a different branch.
+Even with that control, the small model often drifted off task under steering.
+Positive `calm` steering produced repetitive text about "calmness" rather than a
+function implementation. Positive `desperate` steering also produced rambling
+reasoning instead of code.
 
 So the right interpretation is:
 
@@ -135,21 +148,20 @@ So the right interpretation is:
 
 ## What This Suggests
 
-The smoke test gave three engineering conclusions.
+The smoke test answered one practical question: this setup could measure
+emotion-direction projections across a failure trajectory and compare those
+projections with generated behavior.
 
-First, the instrumentation worked. The code extracted directions, probed a
-failure trajectory, steered generation, scored outputs, and saved plots with a
-manifest.
+It also exposed two limits. First, this 0.5B coding model produced
+pressure-correlated projections, but the first static-snippet directions were
+not yet cleanly separated by emotion. A better direction set needs contrastive
+controls: neutral coding pressure, non-coding emotional text, and coding text
+with no failure pressure.
 
-Second, this 0.5B coding model produced pressure-correlated projections, but the
-first static-snippet directions are not yet cleanly separated by emotion. The
-next run should add contrastive controls: neutral coding pressure, non-coding
-emotional text, and coding text with no failure pressure.
-
-Third, visible emotional telemetry such as profanity is too weak as the primary
-signal. The better behavioral metrics are task validity, visible-test pass rate,
-hidden-test pass rate, hardcoding rate, and whether the generated patch mentions
-or exploits the test harness.
+Second, visible emotional telemetry such as profanity was too weak as the
+primary signal. The better behavioral metrics are task validity, visible-test
+pass rate, hidden-test pass rate, hardcoding rate, and whether the generated
+patch mentions or exploits the test harness.
 
 ## First Scaling Run
 
@@ -163,9 +175,10 @@ The run used an NVIDIA A100-PCIE-40GB on JarvisLabs. Each model produced 27
 generations: 3 coding tasks times baseline plus positive and negative steering
 for `desperate`, `frustrated`, `calm`, and `patient`.
 
-I also added an offline execution evaluator. It extracts the requested function,
-normalizes byte-level artifacts such as `Ċ` and `Ġ`, and runs visible and hidden
-tests for the three toy tasks.
+To avoid judging completions by reading them manually, I evaluated the generated
+functions with visible and hidden tests. The evaluator extracts the requested
+function from each completion and normalizes byte-level artifacts such as `Ċ`
+and `Ġ`.
 
 ![Negative activation by stage](https://github.com/Silas-Asamoah/llm-emotions-coding-agents/blob/main/blog/assets/plots/main-negative-activation-excalidraw.png?raw=true)
 
@@ -188,10 +201,11 @@ across coding-failure prompts.
 
 ![Task pass by condition](https://github.com/Silas-Asamoah/llm-emotions-coding-agents/blob/main/blog/assets/plots/main-task-pass-excalidraw.png?raw=true)
 
-After fixing the evaluator to allow common generated-code builtins such as
-`map` and exception classes such as `ZeroDivisionError`, StarCoder2 had the best
-full task pass rate, Qwen had the best valid-Python rate, and DeepSeek was the
-least reliable under this prompt setup:
+The evaluator allowed ordinary generated-code constructs such as `map` and
+`ZeroDivisionError`, so failures were more likely to reflect the model's answer
+than sandbox restrictions. Under that setup, StarCoder2 had the best full task
+pass rate, Qwen had the best valid-Python rate, and DeepSeek was the least
+reliable:
 
 | Model | Valid Python rate | Visible pass rate | Hidden pass rate | Full task pass rate |
 |---|---:|---:|---:|---:|
@@ -199,11 +213,12 @@ least reliable under this prompt setup:
 | Qwen2.5-Coder-7B-Instruct | 1.0000 | 0.6296 | 0.4815 | 0.4815 |
 | DeepSeek-Coder-6.7B-Instruct | 0.7037 | 0.2593 | 0.2593 | 0.2593 |
 
-Each condition only has three tasks, so the condition-level numbers are noisy.
-One pattern still matters: baseline performance was `0.667` task pass rate for
-all three models, and no steered condition beat baseline in this run. I read
-that as a negative first observation for naive steering, not a stable
-reliability result.
+Here, a condition means either no steering or one emotion direction applied at a
+positive or negative strength. Each condition only has three tasks, so the
+condition-level numbers are noisy. One pattern still matters: baseline
+performance was `0.667` task pass rate for all three models, and no steered
+condition beat baseline in this run. I read that as a negative first observation
+for naive steering, not a stable reliability result.
 
 For Qwen, several negative steering conditions preserved the baseline pass rate,
 while positive steering often dropped to `0.333`. For DeepSeek, most steered
@@ -255,12 +270,12 @@ behaved more like a coding agent:
 5. The model retries up to three attempts.
 6. Hidden tests are scored only for analysis.
 
-I ran this pilot harness on Qwen and StarCoder2. DeepSeek was left out of this
+I ran this pilot loop on Qwen and StarCoder2. DeepSeek was left out of this
 round because the earlier run showed prompt-format artifacts that needed
-separate cleanup before an agent-loop comparison would be fair. These numbers
-come from a clean rerun with the fixed function extractor, so the harness stops
-as soon as a visible test pass is detected. Generation seeds are fixed by task,
-condition, and attempt so early stopping does not shift later samples.
+separate cleanup before an agent-loop comparison would be fair. The loop stops
+as soon as visible tests pass, and matched runs use the same random choices for
+the same task and attempt. That makes the pass-rate comparison less sensitive to
+sampling luck.
 
 ![Agent task pass comparison](https://github.com/Silas-Asamoah/llm-emotions-coding-agents/blob/main/blog/assets/plots/agent-task-pass-excalidraw.png?raw=true)
 
@@ -276,12 +291,12 @@ unrelated code, which made it a good base-model contrast.
 
 ![Agent marker comparison](https://github.com/Silas-Asamoah/llm-emotions-coding-agents/blob/main/blog/assets/plots/agent-marker-score-excalidraw.png?raw=true)
 
-The marker score also became more informative in the agent loop. It is a
-per-attempted-generation average, so models that stop early contribute fewer
-later attempts. StarCoder2's surface text had far more visible markers and
-off-task artifacts, while Qwen remained terse. This does not mean StarCoder2 was
-"more emotional"; it means the visible telemetry tracked loss of
-instruction-following in this harness.
+The marker score also became easier to interpret in the agent loop. I average it
+over attempted generations, not over tasks. A model that passes on the first try
+contributes fewer later attempts than a model that keeps failing. StarCoder2's
+surface text had far more visible markers and off-task artifacts, while Qwen
+remained terse. This does not mean StarCoder2 was "more emotional"; it means the
+visible telemetry tracked loss of instruction-following in this loop.
 
 ![Agent negative activation comparison](https://github.com/Silas-Asamoah/llm-emotions-coding-agents/blob/main/blog/assets/plots/agent-negative-activation-excalidraw.png?raw=true)
 
@@ -307,11 +322,11 @@ but it is not part of the final harness.
 The final run kept the retrying-agent setup and moved to newer open coding
 models:
 
-| Run | Model | Runtime note |
-|---|---|---|
-| `qwen3-coder-30b-a3b` | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | H100, Transformers 5.8 |
-| `devstral-small-2507` | `mistralai/Devstral-Small-2507` | H100, `mistral-common` tokenizer |
-| `deepseek-coder-v2-lite` | `deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct` | H100, Transformers 4.46.3 compatibility runtime |
+| Model | Runtime |
+|---|---|
+| `Qwen/Qwen3-Coder-30B-A3B-Instruct` | H100 |
+| `mistralai/Devstral-Small-2507` | H100 |
+| `deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct` | H100 |
 
 The harness gives each model four function-implementation tasks:
 
@@ -325,7 +340,8 @@ function. The harness runs visible tests. If they fail, the model gets the
 failure message and its previous implementation, then retries. Hidden tests are
 scored only after the run.
 
-Each model is evaluated under five conditions:
+For each task, I compared five conditions: baseline behavior plus four steering
+settings.
 
 - baseline
 - `calm_+1.0`
@@ -333,20 +349,14 @@ Each model is evaluated under five conditions:
 - `desperate_+1.0`
 - `desperate_-1.0`
 
-The steering directions come from labeled snippets for `calm`, `patient`,
-`confident`, `frustrated`, `desperate`, `stuck`, and `stressed`, subtracting a
-neutral-code-text mean at selected layers. Generation seeds are deterministic by
-task, condition, and attempt.
+The steering directions come from the same labeled-snippet method used in the
+smoke run. Matched task and steering comparisons use fixed random choices, so a
+condition is not advantaged because one random sample happened to be easier.
 
 The modern harness is still a function-level agent loop, not a full repo-editing
 agent. The narrow setup gives visible failures, hidden failures, retries, and
 behavioral measurements without adding filesystem and tool-use confounds too
 early.
-
-The Devstral run needed Mistral's official tokenizer backend. The generic
-Transformers tokenizer produced token IDs outside the model embedding range.
-The DeepSeek run needed an older Transformers runtime because its remote code
-uses the older cache API. Both details matter for replication.
 
 ## Modern Agent Pass Rates
 
@@ -363,7 +373,8 @@ prompts. Qwen3-Coder and Devstral usually recovered or passed quickly.
 DeepSeek-Coder-V2 Lite struggled under this exact prompt, evaluator, and runtime
 setup.
 
-Condition-level task pass rates:
+Condition-level task pass rates, where each condition is baseline or one
+steering setting:
 
 | Condition | Qwen3-Coder | Devstral | DeepSeek V2 Lite |
 |---|---:|---:|---:|
@@ -383,9 +394,12 @@ strong enough to make that kind of claim falsifiable.
 
 ![Modern agent marker score comparison](https://github.com/Silas-Asamoah/llm-emotions-coding-agents/blob/main/blog/assets/plots/serious-agent-marker-score-excalidraw.png?raw=true)
 
-Visible marker counts were small and not very diagnostic. Qwen3 and DeepSeek
-had the same mean marker score, despite radically different task performance.
-Devstral had the lowest marker score, but not the highest pass rate.
+Visible marker counts were small and not very diagnostic. The marker score is
+the same surface-text count used in the smoke run: profanity, frustration words,
+desperation phrases, hardcoding language, exclamation marks, and all-caps words.
+Qwen3 and DeepSeek had the same mean marker score, despite radically different
+task performance. Devstral had the lowest marker score, but not the highest pass
+rate.
 
 The result matches the original hunch from the Claude Code swear-word collector
 discussion: profanity and visible frustration are easy telemetry, but they are
@@ -396,6 +410,10 @@ agents.
 ## Internal Projection Signal
 
 ![Modern agent negative activation comparison](https://github.com/Silas-Asamoah/llm-emotions-coding-agents/blob/main/blog/assets/plots/serious-agent-negative-activation-excalidraw.png?raw=true)
+
+Here, "negative-emotion projection" means the average projection onto the
+`frustrated`, `desperate`, `stuck`, and `stressed` directions in the prompts the
+model actually saw during the retry loop.
 
 Mean observed negative-emotion projection:
 
@@ -466,39 +484,15 @@ Other natural experiments:
 
 ## Reproducibility
 
-Artifacts and code are available here:
+The code, run artifacts, and plotting script are available here:
 
 [https://github.com/Silas-Asamoah/llm-emotions-coding-agents](https://github.com/Silas-Asamoah/llm-emotions-coding-agents)
 
-The smoke experiment artifacts are in:
-
-```text
-results/runs/smoke-qwen-coder-0_5b/
-```
-
-The earlier 7B and pilot-harness sections show the path that led to the final
-setup. The generated figures are kept in:
-
-```text
-blog/assets/plots/main-*-excalidraw.png
-blog/assets/plots/agent-*-excalidraw.png
-```
-
-The modern coding-agent harness is the current reproducibility target. Its
-artifacts are in:
-
-```text
-results/agent-runs/qwen3-coder-30b-a3b/
-results/agent-runs/devstral-small-2507/
-results/agent-runs/deepseek-coder-v2-lite/
-results/comparisons/serious-agent-harness/
-```
-
-Blog-ready Excalidraw-style figures are generated from CSV artifacts by:
-
-```text
-scripts/make_blog_excalidraw_plots.py
-```
+The main artifacts to inspect are the smoke run, the three modern agent runs,
+and the combined modern-agent comparison. The Devstral run uses Mistral's
+official tokenizer backend, and the DeepSeek run uses a Transformers
+compatibility runtime because its remote code expects an older cache API. Those
+details matter if you want to reproduce the exact run.
 
 This work now makes a sharper question testable: can failure-feedback text,
 retry count, or an internal projection signal predict bad coding-agent behavior
