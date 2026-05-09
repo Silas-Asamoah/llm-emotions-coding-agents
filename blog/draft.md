@@ -11,6 +11,16 @@ corresponding to emotion concepts such as `calm`, `afraid`, and `desperate`.
 Their strongest claim is not that the model feels anything. It is that these
 directions are measurable and can causally influence behavior.
 
+During the same period, I came across a [Polymarket tweet](https://x.com/Polymarket/status/2039039854378459610)
+about the Claude Code leak. The tweet claimed that leaked source code showed
+Claude Code detecting profanity in user prompts and logging it as a frustration
+signal. That stuck with me because it treats visible user frustration as
+telemetry.
+
+I wanted to look at the other side of that loop. If users get frustrated when
+coding agents fail, what happens inside the coding model when it repeatedly sees
+test failures, broken patches, and a shrinking retry budget?
+
 That raises an obvious coding-agent question:
 
 > When a coding model sees repeated test failures, do "frustrated",
